@@ -28,7 +28,7 @@ INSTALLED_APPS = [
 
     # Your custom app
     'register',
-    'login' ,
+    
 ]
 
 MIDDLEWARE = [
