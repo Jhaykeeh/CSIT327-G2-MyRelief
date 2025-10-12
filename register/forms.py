@@ -2,9 +2,12 @@ from django import forms
 from .models import Registration
 
 class RegistrationForm(forms.ModelForm):
+    # Add a text input for username
+    username = forms.CharField(max_length=150, label="Username")
+
     class Meta:
         model = Registration
-        fields = ['name', 'address', 'contact', 'id_proof']
+        fields = ['username', 'address', 'contact', 'id_proof']  # exclude user field
 
     def clean_contact(self):
         contact = self.cleaned_data.get('contact')
