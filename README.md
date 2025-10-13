@@ -11,7 +11,7 @@
 
 # Setup & run instructions
 ### Clone the Repository
-- git clone https://github.com/Jhaykeeh/CSIT327-G2-MyRelief
+- git clone https://github.com/Jhaykeeh/CSIT327-G2-MyRelief.git
 - cd MyRelief-System
 
 ## Create and Activate Virtual Environment
@@ -47,4 +47,5 @@
 
 # Deployed link (if available) 
 - none yet
+
 
