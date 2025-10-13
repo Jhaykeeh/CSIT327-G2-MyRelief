@@ -12,7 +12,7 @@
 #Setup & run instructions
 Clone the Repository
 
-git clone https://github.com/JuddKM/MyRelief-System.git
+git clone https://github.com/Jhaykeeh/CSIT327-G2-MyRelief
 
 cd MyRelief-System
 
@@ -46,4 +46,5 @@ Gerad Emeka T. Macopia, Developer, gerademeka.macopia@cit.edu
 
 
 #Deployed link (if available)
+
 
