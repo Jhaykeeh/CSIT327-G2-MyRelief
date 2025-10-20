@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard/<int:user_id>/', views.dashboard_view, name='dashboard'),  # <-- dashboard
     path('dashboard/update_id/<int:user_id>/', views.update_id_proof, name='update_id_proof'),
     path('logout/', views.logout_view, name='logout'),
+    path('inventory/', views.inventory_view, name='inventory'),
 
 
 

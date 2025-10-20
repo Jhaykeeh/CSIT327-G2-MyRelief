@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm, DashboardForm
 from .models import Registration
 from django.contrib.auth import logout
+from .models import Inventory
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -39,3 +41,15 @@ def update_id_proof(request, user_id):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+def inventory_view(request):
+    inventories = Inventory.objects.all()
+
+    # Temporary fix for missing user (since Supabase not yet connected)
+    user_id = request.user.id if request.user.is_authenticated else 1  # placeholder id
+
+    return render(request, 'inventory.html', {
+        'inventories': inventories,
+        'user_id': user_id
+    })
