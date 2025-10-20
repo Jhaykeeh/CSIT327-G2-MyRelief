@@ -7,7 +7,7 @@
         /* --- Body Styling --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff; /* white background */
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -15,10 +15,10 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden; /* prevent scrolling */
+            overflow: hidden;
         }
 
-        /* --- Top-left semi-transparent circle --- */
+        /* --- Background Circles --- */
         body::before {
             content: '';
             position: absolute;
@@ -26,20 +26,19 @@
             left: -150px;
             width: 700px;
             height: 700px;
-            background-color: rgba(47, 122, 62, 0.2); /* green, semi-transparent */
+            background-color: rgba(47, 122, 62, 0.2);
             border-radius: 50%;
             z-index: 0;
         }
 
-        /* --- Bottom-right smaller circle --- */
         body::after {
             content: '';
             position: absolute;
-            bottom: -100px;  /* slightly off-screen */
-            right: -120px;   /* slightly off-screen */
-            width: 400px;    /* smaller than top-left */
+            bottom: -100px;
+            right: -120px;
+            width: 400px;
             height: 400px;
-            background-color: rgba(47, 122, 62, 0.2); /* semi-transparent green */
+            background-color: rgba(47, 122, 62, 0.2);
             border-radius: 50%;
             z-index: 0;
         }
@@ -47,20 +46,20 @@
         /* --- Form Container --- */
         .form-container {
             position: relative;
-            z-index: 1; /* above the background circles */
-            background-color: rgba(53, 94, 59, 0.9); /* #355E3B with 90% opacity */
+            z-index: 1;
+            background-color: rgba(53, 94, 59, 0.9);
             padding: 50px 40px;
             width: 470px;
             border-radius: 25px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* --- Form Heading --- */
+        /* --- Heading --- */
         h2 {
             text-align: center;
             font-weight: 800;
             font-size: 56px;
-            color: #ffffff; /* white text */
+            color: #ffffff;
             margin-bottom: 40px;
             letter-spacing: 1px;
         }
@@ -73,14 +72,14 @@
             color: #fdfdfd;
         }
 
-        /* --- Inputs and Textarea --- */
+        /* --- Inputs --- */
         input, textarea {
             width: 100%;
             padding: 14px;
             margin-bottom: 22px;
             border-radius: 10px;
             border: none;
-            background-color: #ffffff; /* white inputs */
+            background-color: #ffffff;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -96,9 +95,9 @@
             resize: vertical;
         }
 
-        /* --- Save Button --- */
+        /* --- Buttons --- */
         .save-btn {
-            background-color: #18453B; /* dark green */
+            background-color: #18453B;
             color: white;
             border: none;
             padding: 12px 25px;
@@ -113,15 +112,35 @@
             background-color: #15572a;
         }
 
-        /* --- Button Container --- */
+        .back-btn {
+            background-color: #7a7a7a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #555555;
+        }
+
+        /* --- Button Container Side-by-Side --- */
         .btn-container {
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* space between buttons */
         }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h2>Registration</h2>
+
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
@@ -139,6 +158,7 @@
 
             <div class="btn-container">
                 <button type="submit" class="save-btn">Save</button>
+                <a href="{% url 'login' %}"><button type="button" class="back-btn">Back</button></a>
             </div>
         </form>
     </div>
