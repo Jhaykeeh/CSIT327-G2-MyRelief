@@ -132,7 +132,10 @@
 
   <div class="login-container">
     <h2>MyRelief Login</h2>
-    <form id="loginForm" onsubmit="return validateLogin(event)">
+    <!--<form id="loginForm" onsubmit="return validateLogin(event)"> -->
+      <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+
       <div class="form-group">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -149,6 +152,10 @@
         Don't have an account? <a href="{% url 'register' %}">Register here</a>
       </div>
     </form>
+      <!-- Added some Login errors-->
+      {% if error %}
+  <p style="color: #ffb3b3;">{{ error }}</p>
+    {% endif %}
   </div>
 
 </body>
