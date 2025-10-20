@@ -4,136 +4,127 @@
     <meta charset="UTF-8">
     <title>Registration</title>
     <style>
-        /* --- Body Styling --- */
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2f7a3e 20%, #18453B 100%);
             margin: 0;
             padding: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        /* --- Background Circles --- */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -270px;
-            left: -150px;
-            width: 700px;
-            height: 700px;
-            background-color: rgba(47, 122, 62, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
 
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -100px;
-            right: -120px;
-            width: 400px;
-            height: 400px;
-            background-color: rgba(47, 122, 62, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
-
-        /* --- Form Container --- */
         .form-container {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            padding: 50px 45px;
+            width: 420px;
+            border-radius: 25px;
+            color: #fff;
             position: relative;
             z-index: 1;
-            background-color: rgba(53, 94, 59, 0.9);
-            padding: 50px 40px;
-            width: 470px;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* --- Heading --- */
+
         h2 {
             text-align: center;
-            font-weight: 800;
-            font-size: 56px;
+            font-weight: 700;
+            font-size: 38px;
             color: #ffffff;
             margin-bottom: 40px;
             letter-spacing: 1px;
         }
 
-        /* --- Labels --- */
+
         label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            color: #fdfdfd;
+            color: #f0f0f0;
+            font-size: 15px;
         }
 
-        /* --- Inputs --- */
         input, textarea {
             width: 100%;
-            padding: 14px;
+            padding: 14px 16px;
             margin-bottom: 22px;
-            border-radius: 10px;
-            border: none;
-            background-color: #ffffff;
-            font-size: 16px;
-            box-sizing: border-box;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
         input:focus, textarea:focus {
             outline: none;
-            box-shadow: 0 0 6px rgba(31,122,62,0.4);
+            border-color: #6cff9e;
+            background-color: rgba(255,255,255,0.25);
+            box-shadow: 0 0 8px rgba(108,255,158,0.4);
         }
 
         textarea {
-            min-height: 60px;
-            max-height: 120px;
-            resize: vertical;
+            height: 48px;
+            resize: none;
         }
 
         /* --- Buttons --- */
-        .save-btn {
-            background-color: #18453B;
-            color: white;
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
             border: none;
-            padding: 12px 25px;
-            font-size: 16px;
+            border-radius: 30px;
+            padding: 12px 28px;
+            font-size: 15px;
             font-weight: 600;
-            border-radius: 20px;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #3bff70, #2e9b50);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(47,122,62,0.4);
         }
 
         .save-btn:hover {
-            background-color: #15572a;
+            box-shadow: 0 0 20px rgba(108,255,158,0.8);
+            transform: translateY(-2px);
         }
 
         .back-btn {
-            background-color: #7a7a7a;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
         }
 
         .back-btn:hover {
-            background-color: #555555;
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
         }
 
-        /* --- Button Container Side-by-Side --- */
-        .btn-container {
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 15px; /* space between buttons */
+        /* --- Responsive --- */
+        @media (max-width: 500px) {
+            .form-container {
+                width: 90%;
+                padding: 40px 30px;
+            }
+            h2 {
+                font-size: 32px;
+            }
         }
     </style>
 </head>
@@ -147,8 +138,11 @@
             <label for="{{ form.username.id_for_label }}">Username</label>
             {{ form.username }}
 
+            <label for="{{ form.password.id_for_label }}">Password</label>
+            <input type="password" name="password" id="{{ form.password.id_for_label }}" placeholder="Enter your password">
+
             <label for="{{ form.address.id_for_label }}">Address</label>
-            {{ form.address }}
+            <textarea name="address" id="{{ form.address.id_for_label }}" placeholder="Enter your address"></textarea>
 
             <label for="{{ form.contact.id_for_label }}">Contact Number</label>
             {{ form.contact }}
