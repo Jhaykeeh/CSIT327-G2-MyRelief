@@ -80,20 +80,3 @@ def login_view(request):
 
     return render(request, 'login.html')
 
-#Added a dashboard in view.py
-def dashboard_view(request, user_id):
-    user = get_object_or_404(Registration, id=user_id)
-
-    # Prevent users from accessing other dashboards
-    if request.user.id != user.id:
-        return redirect('dashboard', user_id=request.user.id)
-
-    if request.method == 'POST':
-        form = DashboardForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('dashboard', user_id=user.id)
-    else:
-        form = DashboardForm(instance=user)
-
-    return render(request, 'dashboard.html', {'form': form, 'user': user})
