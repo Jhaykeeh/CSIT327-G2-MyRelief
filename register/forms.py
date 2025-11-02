@@ -7,6 +7,10 @@ class RegistrationForm(forms.ModelForm):
         widget=forms.PasswordInput(render_value=False),
         label="Password"
     )
+    address = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Enter your address', 'style': 'height: 60px;'}),
+        label="Address"
+    )
     id_proof = forms.FileField(required=True, label="Upload ID Proof")  # not in model, for Supabase upload
 
     class Meta:

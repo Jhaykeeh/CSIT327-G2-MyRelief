@@ -9,6 +9,7 @@ urlpatterns = [
 
     # Authentication
     path('register/', views.register_view, name='register'),
+    path('register/success/<int:user_id>/', views.register_success_view, name='register_success'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
