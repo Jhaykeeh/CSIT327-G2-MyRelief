@@ -16,7 +16,7 @@ urlpatterns = [
     path('dashboard/<int:user_id>/', views.dashboard_view, name='dashboard'),
 
     # Update user ID proof
-    path('dashboard/update_id/<int:user_id>/', views.update_id_proof, name='update_id_proof'),
+    #path('dashboard/update_id/<int:user_id>/', views.update_id_proof, name='update_id_proof'),
 
     # Inventory page
     path('inventory/', views.inventory_view, name='inventory'),

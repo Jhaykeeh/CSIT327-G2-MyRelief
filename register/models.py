@@ -4,7 +4,9 @@ class Registration(models.Model):
     username = models.CharField(max_length=150, unique=True)
     address = models.TextField()
     contact = models.CharField(max_length=15)
-    id_proof = models.FileField(upload_to='id_proofs/')
+    id_proof_url = models.URLField(blank=True, null=True)
+    #id_proof = models.ImageField(upload_to='id_proofs/', blank=True, null=True)
+    #id_proof = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.username

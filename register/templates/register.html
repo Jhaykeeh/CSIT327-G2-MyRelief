@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Registration</title>
     <style>
-        /* --- Body Styling --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
@@ -18,7 +17,6 @@
             overflow: hidden;
         }
 
-        /* --- Background Circles --- */
         body::before {
             content: '';
             position: absolute;
@@ -43,7 +41,6 @@
             z-index: 0;
         }
 
-        /* --- Form Container --- */
         .form-container {
             position: relative;
             z-index: 1;
@@ -54,7 +51,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* --- Heading --- */
         h2 {
             text-align: center;
             font-weight: 800;
@@ -64,7 +60,6 @@
             letter-spacing: 1px;
         }
 
-        /* --- Labels --- */
         label {
             display: block;
             margin-bottom: 6px;
@@ -72,7 +67,6 @@
             color: #fdfdfd;
         }
 
-        /* --- Inputs --- */
         input, textarea {
             width: 100%;
             padding: 14px;
@@ -90,12 +84,21 @@
         }
 
         textarea {
-            min-height: 60px;
-            max-height: 120px;
+            min-height: 100px;
+            max-height: 150px;
             resize: vertical;
         }
+        
+        /* Specific styling for address field - same size as input fields */
+        #id_address {
+            height: 46px;
+            min-height: 46px;
+            max-height: 46px;
+            resize: none;
+            overflow: hidden;
+        }
 
-        /* --- Buttons --- */
+        
         .save-btn {
             background-color: #18453B;
             color: white;
@@ -128,12 +131,11 @@
             background-color: #555555;
         }
 
-        /* --- Button Container Side-by-Side --- */
         .btn-container {
             text-align: center;
             display: flex;
             justify-content: center;
-            gap: 15px; /* space between buttons */
+            gap: 15px;
         }
     </style>
 </head>
@@ -146,6 +148,9 @@
 
             <label for="{{ form.username.id_for_label }}">Username</label>
             {{ form.username }}
+
+            <label for="{{ form.password.id_for_label }}">Password</label>
+            {{ form.password }}
 
             <label for="{{ form.address.id_for_label }}">Address</label>
             {{ form.address }}
