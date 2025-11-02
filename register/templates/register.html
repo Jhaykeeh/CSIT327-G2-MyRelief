@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Registration</title>
     <style>
-
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #2f7a3e 20%, #18453B 100%);
@@ -14,6 +13,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -270px;
+            left: -150px;
+            width: 700px;
+            height: 700px;
+            background-color: rgba(47, 122, 62, 0.2);
+            border-radius: 50%;
+            z-index: 0;
         }
 
 
@@ -30,7 +43,6 @@
             z-index: 1;
         }
 
-
         h2 {
             text-align: center;
             font-weight: 700;
@@ -39,7 +51,6 @@
             margin-bottom: 40px;
             letter-spacing: 1px;
         }
-
 
         label {
             display: block;
@@ -73,18 +84,24 @@
         }
 
         textarea {
-            height: 48px;
+            min-height: 100px;
+            max-height: 150px;
+            resize: vertical;
+        }
+        
+        /* Specific styling for address field - same size as input fields */
+        #id_address {
+            height: 46px;
+            min-height: 46px;
+            max-height: 46px;
             resize: none;
+            overflow: hidden;
         }
 
-        /* --- Buttons --- */
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        button {
+        
+        .save-btn {
+            background-color: #18453B;
+            color: white;
             border: none;
             border-radius: 30px;
             padding: 12px 28px;
@@ -116,15 +133,11 @@
             transform: translateY(-2px);
         }
 
-        /* --- Responsive --- */
-        @media (max-width: 500px) {
-            .form-container {
-                width: 90%;
-                padding: 40px 30px;
-            }
-            h2 {
-                font-size: 32px;
-            }
+        .btn-container {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
     </style>
 </head>
@@ -139,7 +152,7 @@
             {{ form.username }}
 
             <label for="{{ form.password.id_for_label }}">Password</label>
-            <input type="password" name="password" id="{{ form.password.id_for_label }}" placeholder="Enter your password">
+            {{ form.password }}
 
             <label for="{{ form.address.id_for_label }}">Address</label>
             <textarea name="address" id="{{ form.address.id_for_label }}" placeholder="Enter your address"></textarea>

@@ -227,7 +227,8 @@ body {
     <!-- Profile Card -->
     <div class="card">
         <div class="profile-image">
-            <img src="{% if user.id_proof %}{{ user.id_proof.url }}{% else %}{% static 'default_profile.png' %}{% endif %}" alt="Profile">
+            <img src="{% if user.id_proof_url %}{{ user.id_proof_url }}{% else %}{% static 'default_profile.png' %}{% endif %}" alt="Profile">
+
         </div>
         <div class="profile-info">
             <h2>{{ user.username }}</h2>
@@ -249,6 +250,9 @@ body {
     <div class="card">
         <h2>Quick Actions</h2>
         <div class="quick-actions">
+            {% if django_user.is_staff or django_user.is_superuser %}
+            <a href="{% url 'inventory' %}"><i class='bx bx-package'></i>Manage Inventory</a>
+            {% endif %}
             <a href="#"><i class='bx bx-history'></i>View Distribution Logs</a>
             <a href="#"><i class='bx bx-download'></i>Download Reports</a>
             <a href="#"><i class='bx bx-cog'></i>Account Settings</a>

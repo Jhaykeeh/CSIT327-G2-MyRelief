@@ -104,12 +104,19 @@ th {
 <div class="top-nav">
     <h1>Inventory Management</h1>
     <div>
-        <a href="{% url 'dashboard' 1 %}">Back to Dashboard</a>
-        <a href="#">Logout</a>
+        <a href="{% url 'dashboard' user_id %}">Back to Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
 </div>
 
 <div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: {% if message.tags == 'error' %}rgba(255, 0, 0, 0.3){% else %}rgba(0, 255, 0, 0.3){% endif %}; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
     <h2>Add or Update Item</h2>
     <form method="post">
         {% csrf_token %}
@@ -154,6 +161,33 @@ th {
         </tbody>
     </table>
 </div>
+
+<script>
+// Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Update CSRF token in form if it exists
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = getCookie('csrftoken');
+    const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    if (csrfInput && csrfToken) {
+        csrfInput.value = csrfToken;
+    }
+});
+</script>
 
 </body>
 </html>
