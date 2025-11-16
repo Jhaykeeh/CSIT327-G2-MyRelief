@@ -62,3 +62,5 @@ dmypy.json
 .ipynb_checkpoints
 # Local settings
 local_settings.py
+.env
+*.env
