@@ -9,23 +9,21 @@ urlpatterns = [
 
     # Authentication
     path('register/', views.register_view, name='register'),
-    path('register/success/<int:user_id>/', views.register_success_view, name='register_success'),
+    path('register/success/<uuid:user_id>/', views.register_success_view, name='register_success'),
+
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
 
-    # Dashboard (protected)
-    path('dashboard/<int:user_id>/', views.dashboard_view, name='dashboard'),
+    # Dashboard (UUID user_id)
+    path('dashboard/<uuid:user_id>/', views.dashboard_view, name='dashboard'),
 
-    # Update user ID proof
-    #path('dashboard/update_id/<int:user_id>/', views.update_id_proof, name='update_id_proof'),
-
-    # Inventory page
+    # Inventory (admin required)
     path('inventory/', views.inventory_view, name='inventory'),
 
-    # Home redirects to login
+    # Home → Login
     path('', views.login_view, name='home'),
 ]
 
-# For handling media files in development
+# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
