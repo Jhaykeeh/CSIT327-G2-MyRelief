@@ -30,6 +30,7 @@ body {
     backdrop-filter: brightness(0.6);
     position:relative;
     z-index:1;
+    padding: 20px;
 }
 .hero h1 {
     font-family: 'Raleway', sans-serif;
@@ -37,6 +38,7 @@ body {
     font-weight:800;
     color:#ffffff;
     text-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+    margin-bottom: 10px;
 }
 .hero p {
     font-size:1.5rem;
@@ -48,7 +50,7 @@ body {
 /* Container */
 .dashboard-container {
     max-width:1200px;
-    margin:-80px auto 40px auto; /* Lowered enough so hero text visible */
+    margin:-80px auto 40px auto;
     padding:0 20px;
     display:grid;
     grid-template-columns: 1fr 2fr;
@@ -154,7 +156,6 @@ body {
     box-shadow: 0 15px 30px rgba(0,0,0,0.35);
 }
 
-
 .quick-actions {
     display:flex;
     flex-direction:column;
@@ -183,10 +184,10 @@ body {
 
 /* Top Navigation */
 .top-nav {
-    position:absolute;
+    position: absolute;
     top:20px;
     right:20px;
-    display:flex;
+    display: flex;
     gap:15px;
     z-index:3;
 }
@@ -228,7 +229,6 @@ body {
     <div class="card">
         <div class="profile-image">
             <img src="{% if user.id_proof_url %}{{ user.id_proof_url }}{% else %}{% static 'default_profile.png' %}{% endif %}" alt="Profile">
-
         </div>
         <div class="profile-info">
             <h2>{{ user.username }}</h2>
@@ -247,18 +247,17 @@ body {
     </div>
 
     <!-- Quick Actions Card -->
-    <!-- Quick Actions Card -->
-<div class="card">
-    <h2>Quick Actions</h2>
-    <div class="quick-actions">
-        {% if django_user.is_staff or django_user.is_superuser %}
-        <a href="{% url 'inventory' %}"><i class='bx bx-package'></i>Manage Inventory</a>
-        {% endif %}
-        
-       <a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-history'></i>View Distribution Logs</a>
-<a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-cog'></i>Account Settings</a>
-
-</div>
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+            {% if django_user.is_staff or django_user.is_superuser %}
+            <a href="{% url 'inventory' %}"><i class='bx bx-package'></i>Manage Inventory</a>
+            {% endif %}
+            
+            <a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-history'></i>View Distribution Logs</a>
+            <a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-cog'></i>Account Settings</a>
+        </div>
+    </div>
 
 </div>
 
