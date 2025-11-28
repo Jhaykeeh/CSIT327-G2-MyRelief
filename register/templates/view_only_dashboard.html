@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Relief Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<style>
+    /* Global Styles */
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        min-height: 100vh;
+    }
+
+    /* Top Bar */
+    .top-bar {
+        background-color: #2E4D32; /* Dark Olive */
+        color: white;
+        display: flex;
+        justify-content: center; /* Center "MyRelief" */
+        align-items: center;
+        padding: 10px 30px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-bar h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .top-bar .icons {
+        position: absolute;
+        right: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .top-bar .icons i {
+        font-size: 1.5rem;
+        color: white;
+        margin-left: 20px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .top-bar .icons i:hover {
+        color: #A0B572; /* Olive Hover */
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        background-color: #2E4D32;
+        color: white;
+        width: 240px;
+        padding: 30px 20px;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; 
+        height: 100vh;
+        position: fixed;
+        border-radius: 10px;
+        margin-top: 100px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .sidebar a {
+        color: white;
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+    }
+
+    .sidebar a:hover {
+        background-color: #A0B572;
+    }
+
+    .sidebar a i {
+        margin-right: 10px;
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 270px; 
+        padding: 30px 50px;
+        flex-grow: 1;
+        background-color: #f4f4f4;
+        animation: fadeIn 1s ease-in-out;
+        border-radius: 10px;
+        margin-top: 90px;
+    }
+
+    /* Header and Stats */
+    .stats-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        gap: 30px;
+    }
+
+    .stat-box {
+        background-color: #A0B572;
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 30%;
+        text-align: center;
+        font-size: 1.5rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-box:hover {
+        background-color: #8A9A5B;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-box span {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    /* Table Styles */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        background-color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 18px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #2E4D32;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Account Button Styles */
+    .settings-btn {
+        background-color: #2E4D32;
+        color: rgb(255, 255, 255);
+        padding: 12px 24px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-decoration: none;
+        margin-top: 40px;
+    }
+
+    .settings-btn:hover {
+        background-color: #A0B572;
+        transform: translateX(10px);
+    }
+
+    .settings-btn i {
+        margin-right: 10px;
+    }
+
+    /* Logout Button Styles */
+    .logout-btn {
+        background-color: #ff5c5c;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        text-decoration: none;
+        margin-top: 10px; 
+    }
+
+    .logout-btn:hover {
+        background-color: #5d1cb3;
+        transform: translateX(10px);
+    }
+
+    .logout-btn i {
+        margin-right: 10px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .stats-header {
+            flex-direction: column;
+        }
+
+        .stat-box {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .sidebar {
+            width: 200px;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+    <h1>MyRelief!</h1>
+    <div class="icons">
+        <i class="fas fa-search"></i>
+        <i class="fas fa-bell"></i>
+    </div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>MyRelief</h2>
+    <!-- Account Button -->
+    <a href="{% url 'dashboard' user_id=supabase_user.userid %}" class="settings-btn">
+    <i class="fas fa-cog"></i> Account
+</a>
+
+    <!-- Logout Button -->
+    <a href="{% url 'logout' %}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+    <!-- Stats Header -->
+    <div class="stats-header">
+        <div class="stat-box">
+            <span>Total Reliefs Received</span>
+            5
+        </div>
+        <div class="stat-box">
+            <span>Relief Type</span>
+            Food, Medicine
+        </div>
+        <div class="stat-box">
+            <span>Stock Remaining</span>
+            50
+        </div>
+    </div>
+
+    <!-- Family Records Table -->
+    <h2>Your Relief Records</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Relief ID</th>
+                <th>Relief Type</th>
+                <th>Date Received</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>R001</td>
+                <td>Food</td>
+                <td>2025-11-15</td>
+            </tr>
+            <tr>
+                <td>R002</td>
+                <td>Medicine</td>
+                <td>2025-11-16</td>
+            </tr>
+            <tr>
+                <td>R003</td>
+                <td>Food</td>
+                <td>2025-11-18</td>
+            </tr>
+            <tr>
+                <td>R004</td>
+                <td>Food</td>
+                <td>2025-11-20</td>
+            </tr>
+            <tr>
+                <td>R005</td>
+                <td>Medicine</td>
+                <td>2025-11-21</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
