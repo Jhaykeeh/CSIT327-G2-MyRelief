@@ -1,9 +1,7 @@
-# register/views.py
 import os
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
-
 from .forms import RegistrationForm, DashboardForm
 from .models import Inventory
 
@@ -136,7 +134,7 @@ def register_view(request):
                 "role": created.get("role"),
             }
 
-            # you can change this to "register_success" if you prefer the success page
+            # Redirect to dashboard on successful registration
             return redirect("dashboard", user_id=created.get("userid"))
 
     else:
@@ -201,7 +199,6 @@ def login_view(request):
 # DASHBOARD VIEW
 # -------------------------------
 def dashboard_view(request, user_id):
-
     session_user = request.session.get("supabase_user")
     if not session_user or str(session_user.get("userid")) != str(user_id):
         messages.error(request, "Access denied.")
@@ -262,9 +259,12 @@ def dashboard_view(request, user_id):
         form = DashboardForm(initial=initial)
 
     return render(request, "dashboard.html", {
-        "form": form,
-        "supabase_user": user_row,
-    })
+    "form": form,
+    "supabase_user": user_row,
+    "user_id": user_id,  # Ensure `user_id` is in context here
+})
+
+
 
 
 # -------------------------------
@@ -309,4 +309,26 @@ def inventory_view(request):
     return render(request, "inventory.html", {
         "inventory": Inventory.objects.all(),
         "user_id": session_user["userid"]
+    })
+
+
+# -------------------------------
+# VIEW-ONLY DASHBOARD VIEW
+# -------------------------------
+def view_only_dashboard(request, user_id):
+    # Check if the user is logged in and matches the user_id
+    session_user = request.session.get("supabase_user")
+    if not session_user or str(session_user.get("userid")) != str(user_id):
+        messages.error(request, "Access denied.")
+        return redirect("login")
+
+    # Fetch user data from Supabase or session
+    sb = _supabase_table()
+    resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
+    user_row = resp.data[0] if resp.data else None
+
+    # Pass the user data to the view-only template
+    return render(request, "view_only_dashboard.html", {
+        "supabase_user": user_row or session_user,
+        "user_id": user_id,
     })

@@ -218,7 +218,7 @@ body {
 </div>
 
 <nav class="top-nav">
-    <a href="#">Home</a>
+    <a href="{% url 'inventory' %}">Home</a>
     <a href="#">Settings</a>
     <a href="{% url 'logout' %}">Logout</a>
 </nav>
@@ -247,17 +247,19 @@ body {
     </div>
 
     <!-- Quick Actions Card -->
-    <div class="card">
-        <h2>Quick Actions</h2>
-        <div class="quick-actions">
-            {% if django_user.is_staff or django_user.is_superuser %}
-            <a href="{% url 'inventory' %}"><i class='bx bx-package'></i>Manage Inventory</a>
-            {% endif %}
-            <a href="#"><i class='bx bx-history'></i>View Distribution Logs</a>
-            <a href="#"><i class='bx bx-download'></i>Download Reports</a>
-            <a href="#"><i class='bx bx-cog'></i>Account Settings</a>
-        </div>
-    </div>
+    <!-- Quick Actions Card -->
+<div class="card">
+    <h2>Quick Actions</h2>
+    <div class="quick-actions">
+        {% if django_user.is_staff or django_user.is_superuser %}
+        <a href="{% url 'inventory' %}"><i class='bx bx-package'></i>Manage Inventory</a>
+        {% endif %}
+        
+       <a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-history'></i>View Distribution Logs</a>
+<a href="{% url 'view_only_dashboard' user_id=user_id %}"><i class='bx bx-cog'></i>Account Settings</a>
+
+</div>
+
 </div>
 
 <script>
