@@ -133,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ================================
 # SUPABASE CONFIGURATION
 # ================================
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://nrzivufulvzqslrahuld.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yeml2dWZ1bHZ6cXNscmFodWxkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTA0ODM5OCwiZXhwIjoyMDc2NjI0Mzk4fQ.kc971YJdR3S7QApfFVPWfJWXfNaed8YfeMnAbUzhSyQ")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "id_proof")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", "users")
