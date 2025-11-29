@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRelief Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /* --- Body Styling --- */
     body {
@@ -14,7 +15,7 @@
       justify-content: center;
       align-items: center;
       background-color: #ffffff;
-      overflow: hidden; /* Prevent scrolling */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     /* --- Full Split Layout --- */
@@ -22,162 +23,349 @@
       display: flex;
       width: 100%;
       height: 100vh;
+      overflow: hidden;
     }
 
-    /* Left Side: Darker Green Section */
+    /* LEFT SIDE */
     .left-side {
       flex: 1;
-      background-color: #2C4A32; /* Dark Green (updated) */
+      background-image: url('https://t4.ftcdn.net/jpg/04/80/07/21/360_F_480072179_z17gw2gvY8AJfAnzIlT37YCrX8ehdjpJ.jpg');
+      background-size: cover;
+      background-position: center;
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
       text-align: center;
-      padding: 40px;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
     }
 
     .left-side p {
-      font-size: 5rem; /* "Welcome to" text */
-      font-family: 'Raleway', sans-serif; /* Font change for "Welcome to" */
-      font-weight: 600;
-      margin-bottom: -40px;
+      font-size: 3.5rem;
+      font-family: 'Raleway', sans-serif;
+      font-weight: 500;
+      margin-bottom: 10px;
+      z-index: 1;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     }
 
     .left-side h1 {
-      font-size: 6rem; /* Larger font size */
+      font-size: 5rem;
+      font-family: 'Raleway', sans-serif;
       font-weight: 800;
       margin: 0;
-      margin-bottom: 110px;
+      margin-bottom: 40px;
+      z-index: 1;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     }
 
-    /* Green Half Circle in Top Right */
-    .half-circle {
-      position: absolute;
-      top: -130px; /* Move the circle upwards */
-      left: 1700px; /* Align it to the top-right */
-      width: 500px;
-      height: 500px;
-      background-color: rgba(44, 74, 50, 0.7); /* Semi-transparent green */
-      border-radius: 50%;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow to make it visible */
-    }
+    
 
-    /* Right Side: Login Form */
+    /* RIGHT SIDE */
     .right-side {
       flex: 1;
-      background-color: #ffffff;
       padding: 50px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      background-color: #ffffff;
       text-align: center;
     }
 
-    /* Heading in Login Form */
+    /* Heading with custom font */
     .right-side h2 {
-      font-size: 70px; /* Larger "Log In" text */
-      font-weight: 800;
+      font-size: 2.8rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
       margin-bottom: 30px;
       color: #3A5A40; /* Dark Green */
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
     }
 
-    /* Form Group Styling */
-    .form-group {
-      width: 100%;
-      margin-bottom: 20px;
+    .right-side h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, #3A5A40, #2C4A32);
+      border-radius: 2px;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
+    /* Role Selector Section - Made more compact */
+    .role-select {
+      width: 70%;
+      max-width: 350px;
+      margin-bottom: 30px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .role-select h3 {
+      font-size: 1.1rem;
+      font-family: 'Montserrat', sans-serif;
       font-weight: 600;
+      margin-bottom: 15px;
       color: #333;
     }
 
+    .role-options {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .role-option {
+      flex: 1;
+      max-width: 120px;
+      padding: 10px 15px;
+      background: #f4f4f4;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      opacity: 0.8;
+      border: 2px solid transparent;
+      font-size: 0.9rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .role-option.selected {
+      border-color: #3A5A40;
+      background-color: #e9f5ec;
+      color: #3A5A40;
+      opacity: 1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(58, 90, 64, 0.2);
+    }
+
+    .role-option.admin-selected {
+      border-color: #007bff;
+      background-color: #cce5ff;
+      color: #007bff;
+      opacity: 1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    }
+
+    .role-option:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+
+    /* Form Styling */
+    .login-form {
+      width: 70%;
+      max-width: 350px;
+    }
+
+    .form-group {
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+      padding-left: 5px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
     .form-group input {
-      width: 100%; /* Wider input fields */
-      padding: 18px; /* Larger input fields */
-      margin-bottom: -2px;
-      border-radius: 20px;
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
       border: 1px solid #ddd;
-      font-size: 18px; /* Larger font inside the input */
+      background: #f8f9fa;
+      font-size: 16px;
       box-sizing: border-box;
-      background-color: #f4f4f4;
+      transition: all 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .form-group input:focus {
       outline: none;
-      border-color: #3A5A40; /* Dark Green */
-      box-shadow: 0 0 6px rgba(31,122,62,0.4);
+      border-color: #3A5A40;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(58, 90, 64, 0.1);
     }
 
     /* Sign In Button Styling */
     .btn {
       width: 100%;
-      padding: 18px; /* Larger button */
-      background-color: #3A5A40; /* Dark Green */
+      padding: 14px;
+      background-color: #3A5A40;
       border: none;
-      border-radius: 20px;
+      border-radius: 12px;
       color: white;
-      font-size: 18px; /* Larger text on the button */
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.5px;
     }
 
     .btn:hover {
-      background-color: #2c4a32; /* Darker Green */
+      background-color: #2C4A32;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(44, 74, 50, 0.2);
     }
 
-    /* Sign up link */
+    .btn:active {
+      transform: translateY(0);
+    }
+
     .signup-link {
-      margin-top: 15px;
-      font-size: 16px;
-      color: #333;
+      margin-top: 20px;
+      font-size: 15px;
+      color: #666;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .signup-link a {
-      color: #3A5A40; /* Dark Green */
+      color: #3A5A40;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .signup-link a:hover {
+      color: #2C4A32;
       text-decoration: underline;
     }
 
+    .error-message {
+      color: #dc3545;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #f8d7da;
+      border-radius: 8px;
+      border: 1px solid #f5c6cb;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .login-container {
+        flex-direction: column;
+        height: auto;
+      }
+      
+      .left-side, .right-side {
+        flex: none;
+        width: 100%;
+      }
+      
+      .left-side {
+        padding: 40px 20px;
+      }
+      
+      .left-side p {
+        font-size: 2.5rem;
+      }
+      
+      .left-side h1 {
+        font-size: 3.5rem;
+      }
+      
+      .role-select, .login-form {
+        width: 80%;
+      }
+      
+      .half-circle {
+        top: -80px;
+        right: -80px;
+        width: 250px;
+        height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .right-side {
+        padding: 30px 20px;
+      }
+      
+      .role-select, .login-form {
+        width: 90%;
+      }
+      
+      .role-option {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+      
+      .right-side h2 {
+        font-size: 2.2rem;
+      }
+      
+      .half-circle {
+        top: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@800&display=swap" rel="stylesheet">
-
   <div class="login-container">
-    <!-- Left Side: Welcome Section -->
+    <!-- LEFT SIDE -->
     <div class="left-side">
       <p>Welcome to</p>
       <h1>MyRelief!</h1>
-      <div class="half-circle"></div> <!-- Green Half Circle -->
+      <div class="half-circle"></div>
     </div>
 
-    <!-- Right Side: Login Form -->
+    <!-- RIGHT SIDE -->
     <div class="right-side">
+      <!-- ROLE SELECTOR -->
+      <div class="role-select">
+        <h3>Login as:</h3>
+        <div class="role-options">
+          <div class="role-option selected" data-role="User">User</div>
+          <div class="role-option" data-role="Admin">Admin</div>
+        </div>
+      </div>
+
       <h2>Log In</h2>
-      <form method="POST" action="{% url 'login' %}">
+
+      <form method="POST" action="{% url 'login' %}" class="login-form">
         {% csrf_token %}
+
+        <!-- Hidden field to store the selected role -->
+        <input type="hidden" id="roleInput" name="role" value="User">
 
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+          <input type="text" id="username" name="username" required>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <input type="password" id="password" name="password" required>
         </div>
 
         <button type="submit" class="btn">Sign In</button>
@@ -185,13 +373,38 @@
         <div class="signup-link">
           Don't have an account? <a href="{% url 'register' %}">Register here</a>
         </div>
+
+        {% if error %}
+        <div class="error-message">
+          {{ error }}
+        </div>
+        {% endif %}
       </form>
 
-      {% if error %}
-      <p style="color: #ffb3b3;">{{ error }}</p>
-      {% endif %}
     </div>
   </div>
+
+  <script>
+    // Handle selecting the role
+    const options = document.querySelectorAll('.role-option');
+    const roleInput = document.getElementById('roleInput');
+
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+
+        // Remove previous highlight
+        options.forEach(opt => {
+          opt.classList.remove('selected', 'admin-selected');
+        });
+
+        // Highlight selected role
+        option.classList.add(option.dataset.role === 'Admin' ? 'admin-selected' : 'selected');
+
+        // Set hidden input value
+        roleInput.value = option.dataset.role;
+      });
+    });
+  </script>
 
 </body>
 </html>
