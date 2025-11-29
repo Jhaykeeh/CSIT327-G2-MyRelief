@@ -66,7 +66,7 @@ ROOT_URLCONF = 'MyReliefSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Can also place global templates here if needed
+        # You can also place global templates here if needed
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -115,7 +115,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -130,10 +130,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# ================================
 # SUPABASE CONFIGURATION
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+# ================================
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://nrzivufulvzqslrahuld.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5yeml2dWZ1bHZ6cXNscmFodWxkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MTA0ODM5OCwiZXhwIjoyMDc2NjI0Mzk4fQ.kc971YJdR3S7QApfFVPWfJWXfNaed8YfeMnAbUzhSyQ")
 
 SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "id_proof")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", "users")
