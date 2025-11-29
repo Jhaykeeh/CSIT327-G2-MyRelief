@@ -5,18 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyRelief Registration</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         /* --- Body Styling --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
-            margin: 0;
-            padding: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         /* --- Background Circles --- */
@@ -48,32 +53,34 @@
         .form-container {
             position: relative;
             z-index: 1;
-            background-color: rgba(53, 94, 59, 0.9);
-            padding: 50px 40px;
-            width: 380px;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background-color: rgba(53, 94, 59, 0.95);
+            padding: 45px 40px;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
         /* --- Heading --- */
         .form-container h2 {
-            font-weight: 800;
-            font-size: 36px;
+            font-weight: 700;
+            font-size: 32px;
             color: #ffffff;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+            margin-bottom: 35px;
+            letter-spacing: 0.5px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
+            font-size: 14px;
             color: #fdfdfd;
             text-align: left;
         }
@@ -82,20 +89,22 @@
         .form-group textarea,
         .form-group input[type="file"] {
             width: 100%;
-            padding: 14px;
+            padding: 13px 15px;
             margin-bottom: 0;
             border-radius: 10px;
-            border: none;
+            border: 2px solid transparent;
             background-color: #ffffff;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
-            color: #000;
+            color: #333;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            box-shadow: 0 0 6px rgba(31,122,62,0.4);
+            border-color: #a8e6a1;
+            box-shadow: 0 0 0 3px rgba(168, 230, 161, 0.2);
         }
 
         .form-group textarea {
@@ -103,6 +112,7 @@
             max-height: 80px;
             resize: vertical;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
         }
 
         #id_address {
@@ -112,15 +122,32 @@
         }
 
         .form-group input[type="file"] {
-            padding: 10px;
-            background-color: #ffffff;
+            padding: 11px;
+            background-color: #f8f9fa;
             cursor: pointer;
+            font-size: 14px;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            padding: 8px 16px;
+            background-color: #18453B;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .form-group input[type="file"]::file-selector-button:hover {
+            background-color: #15572a;
         }
 
         .error-message {
             color: #ffb3b3;
             font-size: 12px;
-            margin-top: 5px;
+            margin-top: 6px;
             margin-bottom: 10px;
             text-align: left;
         }
@@ -130,8 +157,7 @@
         }
 
         .messages div {
-            color: #ffb3b3;
-            padding: 10px;
+            padding: 12px 15px;
             background: rgba(255, 0, 0, 0.1);
             border-radius: 8px;
             margin-bottom: 10px;
@@ -143,46 +169,50 @@
             padding: 14px;
             background-color: #18453B;
             border: none;
-            border-radius: 20px;
+            border-radius: 10px;
             color: white;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             margin-bottom: 10px;
         }
 
         .btn:hover {
             background-color: #15572a;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
 
         .back-btn {
             width: 100%;
             padding: 14px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 10px;
             color: white;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
             box-sizing: border-box;
         }
 
         .back-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
         }
 
         .btn-container {
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         /* --- Signup Link --- */
         .login-link {
-            margin-top: 15px;
+            margin-top: 18px;
             font-size: 14px;
             color: #fdfdfd;
         }
@@ -190,11 +220,31 @@
         .login-link a {
             color: #a8e6a1;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .login-link a:hover {
             text-decoration: underline;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .form-container {
+                padding: 35px 30px;
+            }
+
+            .form-container h2 {
+                font-size: 28px;
+                margin-bottom: 28px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
         }
     </style>
 </head>
