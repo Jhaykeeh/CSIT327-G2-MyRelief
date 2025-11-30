@@ -46,7 +46,8 @@
 
 
 # Deployed link 
-- https://myrelief.onrender.com
+- https://csit327-g2-myrelief.onrender.com
+
 
 
 
