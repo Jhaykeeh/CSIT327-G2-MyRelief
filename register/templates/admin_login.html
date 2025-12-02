@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRelief Admin Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/admin_login.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="login-container">
+
+    <div class="left-side">
+      <p>Admin Panel</p>
+      <h1>MyRelief</h1>
+    </div>
+
+    <div class="right-side">
+
+      <h2>Admin Login</h2>
+
+      <!-- Form now STRICTLY for admins -->
+      <form method="POST" action="{% url 'admin_login' %}" class="login-form">
+        {% csrf_token %}
+
+        <input type="hidden" name="role" value="Admin">
+
+        <div class="form-group">
+          <label for="username">Admin Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Admin Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn">Sign In</button>
+        <a href="admin_inventory.html">proceed</a>
+        {% if error %}
+        <div class="error-message">
+          {{ error }}
+        </div>
+        {% endif %}
+      </form>
+
+    </div>
+  </div>
+
+</body>
+</html>
