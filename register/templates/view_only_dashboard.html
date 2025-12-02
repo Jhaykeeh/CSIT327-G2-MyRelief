@@ -266,9 +266,10 @@
 <div class="sidebar">
     <h2>MyRelief</h2>
     <!-- Account Button -->
-    <a href="{% url 'dashboard' user_id=supabase_user.userid %}" class="settings-btn">
+    <a href="{% url 'dashboard' user_id=user_id %}" class="settings-btn">
     <i class="fas fa-cog"></i> Account
 </a>
+
 
     <!-- Logout Button -->
     <a href="{% url 'logout' %}" class="logout-btn">
