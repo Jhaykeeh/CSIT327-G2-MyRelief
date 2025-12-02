@@ -4,54 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registration Successful</title>
+
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #8F9779, #6C7C59);
+      background-color: #f4f6f5;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
       margin: 0;
-      color: white;
     }
+
     .success-container {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(14px);
-      padding: 40px;
-      border-radius: 20px;
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      width: 420px;
+      animation: fadeIn 0.4s ease-in-out;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .checkmark {
+      font-size: 3.2rem;
+      color: #18453B;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
     h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
+      font-size: 1.9rem;
+      color: #18453B;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
+
+    p {
+      font-size: 1.05rem;
+      color: #555;
+      margin: 8px 0;
+    }
+
     .btn {
       display: inline-block;
-      padding: 12px 30px;
+      margin-top: 22px;
+      padding: 12px 28px;
       background-color: #18453B;
-      color: white;
+      color: #fff;
       text-decoration: none;
-      border-radius: 20px;
+      border-radius: 12px;
       font-weight: 600;
-      margin-top: 20px;
-      transition: background 0.3s ease;
+      font-size: 1rem;
+      transition: 0.25s ease;
     }
+
     .btn:hover {
-      background-color: #15572a;
-    }
-    p {
-      margin: 10px 0;
-      font-size: 1.1rem;
+      background-color: #0f332b;
     }
   </style>
 </head>
 <body>
+
   <div class="success-container">
-    <h2>✓ Registration Successful!</h2>
+    <div class="checkmark">✓</div>
+
+    <h2>Registration Successful!</h2>
+
     <p>Your account has been created successfully.</p>
-    <p>Redirecting to dashboard...</p>
+    <p>Proceed to login...</p>
+
     {% if user_id %}
       <script>
         setTimeout(function() {
@@ -63,5 +90,6 @@
       <a href="{% url 'login' %}" class="btn">Back to Login</a>
     {% endif %}
   </div>
+
 </body>
 </html>
