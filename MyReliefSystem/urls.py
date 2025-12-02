@@ -6,7 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    #path('admin-inventory/', views.admin_inventory, name='admin_inventory'),
+    path('admin-login/', views.admin_login, name='admin_login'),
     # Authentication routes
     path('register/', views.register_view, name='register'),
     path('register/success/<uuid:user_id>/', views.register_success_view, name='register_success'),
@@ -24,6 +25,8 @@ urlpatterns = [
 
     # Add the view-only dashboard URL path
     path('view-only-dashboard/<uuid:user_id>/', views.view_only_dashboard, name='view_only_dashboard'),
+
+
 ]
 
 # Serve media files in development

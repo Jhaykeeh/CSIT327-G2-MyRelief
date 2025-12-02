@@ -292,3 +292,9 @@ def view_only_dashboard(request, user_id):
         "supabase_user": user_row or session_user,
         "user_id": user_id,
     })
+#to view the inventory temporary
+def admin_inventory(request):
+    return render(request, "admin_inventory.html")
+#to view admin login page
+def admin_login(request):
+    return render(request, "admin_login.html")
