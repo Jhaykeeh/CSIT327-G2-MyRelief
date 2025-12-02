@@ -1,325 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRelief Registration</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyRelief Registration</title>
+<style>
+    /* Reset & Box Sizing */
+    * { margin:0; padding:0; box-sizing:border-box; }
 
-        /* --- Body Styling --- */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow-x: hidden;
-            padding: 20px;
-        }
+    /* Body & Background */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f2f7f2, #e0f2e0);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: relative;
+    }
 
-        /* --- Background Circles --- */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -270px;
-            left: -150px;
-            width: 700px;
-            height: 700px;
-            background-color: rgba(47, 122, 62, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
+    body::before, body::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        z-index: 0;
+    }
 
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -100px;
-            right: -120px;
-            width: 400px;
-            height: 400px;
-            background-color: rgba(47, 122, 62, 0.2);
-            border-radius: 50%;
-            z-index: 0;
-        }
+    body::before {
+        top: -250px;
+        left: -150px;
+        width: 700px;
+        height: 700px;
+        background: rgba(0, 69, 38, 0.08);
+    }
 
-        /* --- Form Container --- */
-        .form-container {
-            position: relative;
-            z-index: 1;
-            background-color: rgba(53, 94, 59, 0.95);
-            padding: 45px 40px;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
+    body::after {
+        bottom: -120px;
+        right: -100px;
+        width: 500px;
+        height: 500px;
+        background: rgba(0, 69, 38, 0.08);
+    }
 
-        /* --- Heading --- */
-        .form-container h2 {
-            font-weight: 700;
-            font-size: 32px;
-            color: #ffffff;
-            margin-bottom: 35px;
-            letter-spacing: 0.5px;
-        }
+    /* Form Container */
+    .form-container {
+        position: relative;
+        z-index: 1;
+        background: #ffffff;
+        padding: 50px 40px;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
 
-        .form-group {
-            margin-bottom: 22px;
-            text-align: left;
-        }
+    .form-container:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #fdfdfd;
-            text-align: left;
-        }
+    /* Heading */
+    .form-container h2 {
+        font-weight: 700;
+        font-size: 36px;
+        color: #00461a;
+        margin-bottom: 35px;
+        letter-spacing: 0.5px;
+    }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group input[type="file"] {
-            width: 100%;
-            padding: 13px 15px;
-            margin-bottom: 0;
-            border-radius: 10px;
-            border: 2px solid transparent;
-            background-color: #ffffff;
-            font-size: 15px;
-            box-sizing: border-box;
-            color: #333;
-            transition: all 0.3s ease;
-        }
+    /* Form Row */
+    .form-row {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+    }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #a8e6a1;
-            box-shadow: 0 0 0 3px rgba(168, 230, 161, 0.2);
-        }
+    .form-group {
+        flex: 1;
+        text-align: left;
+    }
 
-        .form-group textarea {
-            min-height: 60px;
-            max-height: 80px;
-            resize: vertical;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.5;
-        }
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #00461a;
+    }
 
-        #id_address {
-            height: 60px !important;
-            min-height: 60px !important;
-            max-height: 80px !important;
-        }
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid #cfd8cf;
+        background-color: #f7f9f7;
+        font-size: 15px;
+        color: #333;
+        transition: all 0.3s ease;
+    }
 
-        .form-group input[type="file"] {
-            padding: 11px;
-            background-color: #f8f9fa;
-            cursor: pointer;
-            font-size: 14px;
-        }
+    .form-group input:focus {
+        outline: none;
+        border-color: #6caa6c;
+        box-shadow: 0 0 0 3px rgba(108,170,108,0.2);
+        background-color: #ffffff;
+    }
 
-        .form-group input[type="file"]::file-selector-button {
-            padding: 8px 16px;
-            background-color: #18453B;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-right: 10px;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
+    .error-message { color: #e74c3c; font-size: 12px; margin-top: 4px; }
 
-        .form-group input[type="file"]::file-selector-button:hover {
-            background-color: #15572a;
-        }
+    /* Messages */
+    .messages div {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    .messages .success { background: rgba(0,200,0,0.1); color: #0a8a0a; }
+    .messages .error { background: rgba(255,0,0,0.1); color: #c0392b; }
 
-        .error-message {
-            color: #ffb3b3;
-            font-size: 12px;
-            margin-top: 6px;
-            margin-bottom: 10px;
-            text-align: left;
-        }
+    /* Buttons */
+    .btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #6caa6c, #00461a);
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 10px;
+    }
 
-        .messages {
-            margin-bottom: 20px;
-        }
+    .btn:hover {
+        background: linear-gradient(135deg, #00461a, #6caa6c);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    }
 
-        .messages div {
-            padding: 12px 15px;
-            background: rgba(255, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
+    .back-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: #f2f2f2;
+        border: 2px solid #cfd8cf;
+        border-radius: 10px;
+        color: #00461a;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+    }
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background-color: #18453B;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-        }
+    .back-btn:hover {
+        background-color: #e0f2e0;
+        border-color: #6caa6c;
+        transform: translateY(-1px);
+    }
 
-        .btn:hover {
-            background-color: #15572a;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        }
+    /* Login Link */
+    .login-link {
+        margin-top: 18px;
+        font-size: 14px;
+        color: #00461a;
+    }
 
-        .back-btn {
-            width: 100%;
-            padding: 14px;
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            border-radius: 10px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-sizing: border-box;
-        }
+    .login-link a {
+        color: #6caa6c;
+        text-decoration: none;
+        font-weight: 600;
+    }
 
-        .back-btn:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-1px);
-        }
+    .login-link a:hover { text-decoration: underline; }
 
-        .btn-container {
-            margin-top: 25px;
-        }
-
-        /* --- Signup Link --- */
-        .login-link {
-            margin-top: 18px;
-            font-size: 14px;
-            color: #fdfdfd;
-        }
-
-        .login-link a {
-            color: #a8e6a1;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* --- Responsive Design --- */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-
-            .form-container {
-                padding: 35px 30px;
-            }
-
-            .form-container h2 {
-                font-size: 28px;
-                margin-bottom: 28px;
-            }
-
-            .form-group {
-                margin-bottom: 18px;
-            }
-        }
-    </style>
+    /* Responsive */
+    @media (max-width: 480px) {
+        .form-container { padding: 40px 30px; }
+        .form-container h2 { font-size: 28px; margin-bottom: 30px; }
+        .form-row { flex-direction: column; gap: 10px; }
+    }
+</style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>MyRelief Registration</h2>
+<div class="form-container">
+    <h2>MyRelief Registration</h2>
 
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div style="color: {% if message.tags == 'error' %}#ffb3b3{% elif message.tags == 'warning' %}#ffd700{% else %}#6cff9e{% endif %};">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-                <div style="color: #ffb3b3; margin-bottom: 20px; padding: 10px; background: rgba(255,0,0,0.1); border-radius: 8px;">
-                    {{ form.non_field_errors }}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
                 </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Name Fields -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.middle_initial.id_for_label }}">Middle Initial (Optional)</label>
+                {{ form.middle_initial }}
+                {% if form.middle_initial.errors %}
+                    <div class="error-message">{{ form.middle_initial.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error-message">{{ form.username.errors }}</div>
             {% endif %}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Username</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="error-message">{{ form.username.errors }}</div>
-                {% endif %}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="error-message">{{ form.password.errors }}</div>
+            {% endif %}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">Password</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    <div class="error-message">{{ form.password.errors }}</div>
-                {% endif %}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.address.id_for_label }}">Address</label>
+            {{ form.address }}
+            {% if form.address.errors %}
+                <div class="error-message">{{ form.address.errors }}</div>
+            {% endif %}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.address.id_for_label }}">Address</label>
-                {{ form.address }}
-                {% if form.address.errors %}
-                    <div class="error-message">{{ form.address.errors }}</div>
-                {% endif %}
-            </div>
+        <div class="form-group">
+            <label for="{{ form.contact.id_for_label }}">Contact Number</label>
+            {{ form.contact }}
+            {% if form.contact.errors %}
+                <div class="error-message">{{ form.contact.errors }}</div>
+            {% endif %}
+        </div>
 
-            <div class="form-group">
-                <label for="{{ form.contact.id_for_label }}">Contact Number</label>
-                {{ form.contact }}
-                {% if form.contact.errors %}
-                    <div class="error-message">{{ form.contact.errors }}</div>
-                {% endif %}
-            </div>
+        <button type="submit" class="btn">Register</button>
+        <a href="{% url 'login' %}" class="back-btn">Back to Login</a>
+    </form>
 
-            <div class="form-group">
-                <label for="{{ form.id_proof.id_for_label }}">Upload ID Proof</label>
-                {{ form.id_proof }}
-                {% if form.id_proof.errors %}
-                    <div class="error-message">{{ form.id_proof.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="btn-container">
-                <button type="submit" class="btn">Register</button>
-                <a href="{% url 'login' %}" class="back-btn">Back to Login</a>
-            </div>
-
-            <div class="login-link">
-                Already have an account? <a href="{% url 'login' %}">Login here</a>
-            </div>
-        </form>
+    <div class="login-link">
+        Already have an account? <a href="{% url 'login' %}">Login here</a>
     </div>
+</div>
 </body>
 </html>
