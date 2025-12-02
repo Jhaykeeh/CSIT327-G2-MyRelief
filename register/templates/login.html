@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRelief Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
@@ -26,40 +27,50 @@
 
     .left-side {
       flex: 1;
-      background-image: url('https://t4.ftcdn.net/jpg/04/80/07/21/360_F_480072179_z17gw2gvY8AJfAnzIlT37YCrX8ehdjpJ.jpg');
+      background-image: url('https://plus.unsplash.com/premium_photo-1681701932128-17445c8ae68b?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
       background-size: cover;
       background-position: center;
+      position: relative;
+      overflow: hidden;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
       text-align: center;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
     }
 
-    .left-side p {
-      font-size: 3.5rem;
-      font-family: 'Raleway', sans-serif;
-      font-weight: 500;
-      margin-bottom: 10px;
-      z-index: 1;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    .left-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.35);
     }
 
     .left-side h1 {
-      font-size: 5rem;
-      font-family: 'Raleway', sans-serif;
+      font-size: 6rem;
       font-weight: 800;
       margin: 0;
-      margin-bottom: 40px;
+      margin-bottom: 10;
       z-index: 1;
       letter-spacing: 1px;
       text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     }
 
-    /* RIGHT SIDE */
+    .left-side .tagline {
+        font-size: 1.2rem;
+        font-weight: 250; /* thinner text */
+        margin-top: 10px;
+        z-index: 1;
+        max-width: 70%;
+        line-height: 1.4;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+
+
+    /* RIGHT SECTION */
     .right-side {
       flex: 1;
       padding: 50px;
@@ -94,9 +105,12 @@
       border-radius: 2px;
     }
 
-    .login-form {
-      width: 70%;
-      max-width: 350px;
+    /* FORM WRAPPER - FIX ALIGNMENT */
+    .form-wrapper {
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .form-group {
@@ -121,9 +135,8 @@
       border: 1px solid #ddd;
       background: #f8f9fa;
       font-size: 16px;
-      box-sizing: border-box;
       transition: all 0.3s ease;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      box-sizing: border-box;
     }
 
     .form-group input:focus {
@@ -145,8 +158,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       margin-top: 10px;
-      font-family: 'Montserrat', sans-serif;
-      letter-spacing: 0.5px;
+      box-sizing: border-box;
     }
 
     .btn:hover {
@@ -159,15 +171,12 @@
       margin-top: 20px;
       font-size: 15px;
       color: #666;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .signup-link a {
       color: #3A5A40;
       text-decoration: none;
       font-weight: 600;
-      transition: color 0.2s ease;
-      font-family: 'Montserrat', sans-serif;
     }
 
     .signup-link a:hover {
@@ -185,7 +194,6 @@
       width: 100%;
       box-sizing: border-box;
       font-size: 14px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     @media (max-width: 1024px) {
@@ -195,57 +203,15 @@
       }
 
       .left-side, .right-side {
-        flex: none;
         width: 100%;
-      }
-
-      .left-side {
-        padding: 40px 20px;
-      }
-
-      .left-side p {
-        font-size: 2.5rem;
       }
 
       .left-side h1 {
         font-size: 3.5rem;
       }
 
-      .role-select, .login-form {
-        width: 80%;
-      }
-
-      .half-circle {
-        top: -80px;
-        right: -80px;
-        width: 250px;
-        height: 250px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .right-side {
-        padding: 30px 20px;
-      }
-
-      .role-select, .login-form {
-        width: 90%;
-      }
-
-      .role-option {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-      }
-
-      .right-side h2 {
-        font-size: 2.2rem;
-      }
-
-      .half-circle {
-        top: -60px;
-        right: -60px;
-        width: 200px;
-        height: 200px;
+      .left-side .tagline {
+        font-size: 1.2rem;
       }
     }
   </style>
@@ -253,40 +219,48 @@
 
 <body>
   <div class="login-container">
+
+    <!-- LEFT SIDE -->
     <div class="left-side">
-      <p>Welcome to</p>
       <h1>MyRelief!</h1>
+      <p class="tagline">
+        A streamlined platform for organizing, distributing, and monitoring relief assistance for communities in need.
+      </p>
     </div>
 
+    <!-- RIGHT SIDE -->
     <div class="right-side">
       <h2>Log In</h2>
 
-      <form method="POST" action="{% url 'login' %}" class="login-form">
+      <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
 
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" required>
-        </div>
+        <div class="form-wrapper">
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
-        </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+          </div>
 
-        <button type="submit" class="btn">Sign In</button>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
 
-        <div class="signup-link">
-          Don't have an account? <a href="{% url 'register' %}">Register here</a>
-        </div>
+          <button type="submit" class="btn">Sign In</button>
 
-        {% if error %}
-        <div class="error-message">
-          {{ error }}
+          <div class="signup-link">
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>
+          </div>
+
+          {% if error %}
+          <div class="error-message">{{ error }}</div>
+          {% endif %}
+
         </div>
-        {% endif %}
       </form>
     </div>
+
   </div>
 </body>
 </html>
