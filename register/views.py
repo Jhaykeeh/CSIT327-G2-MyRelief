@@ -4,253 +4,245 @@ from django.contrib import messages
 from django.conf import settings
 from .forms import RegistrationForm, DashboardForm
 from .models import Inventory
+import re
 
-# Optional utils
-try:
-    from .utils import upload_to_supabase, save_to_supabase_table, get_from_supabase_table
-    _HAS_UTILS = True
-except Exception:
-    _HAS_UTILS = False
-
-# -------------------------------
-# SUPABASE CLIENT (LOCAL + RENDER READY)
-# -------------------------------
+# ---------------- SUPABASE CLIENT ----------------
 try:
     from supabase import create_client
 
     SUPABASE_URL = getattr(settings, "SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
-    
-    # Use SERVICE_KEY for local/server-side, ANON_KEY can be used for client if needed
-    SUPABASE_KEY = getattr(
-        settings, 
-        "SUPABASE_SERVICE_KEY", 
-        os.getenv("SUPABASE_SERVICE_KEY", "")
-    )
-
+    SUPABASE_KEY = getattr(settings, "SUPABASE_SERVICE_KEY", os.getenv("SUPABASE_SERVICE_KEY", ""))
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 except Exception:
     supabase = None
 
-def _supabase_table():
+
+def _supabase():
     if supabase is None:
-        raise RuntimeError("Supabase is not configured. Check SUPABASE_URL and SUPABASE_KEY.")
+        raise RuntimeError("Supabase is not configured.")
     return supabase
 
-# -------------------------------
-# HELPERS
-# -------------------------------
+
+# ---------------- HELPERS ----------------
+def _get_user_by_contact(contact):
+    sb = _supabase()
+    resp = sb.table("users").select("*").eq("contact", contact).limit(1).execute()
+    return resp.data[0] if resp.data else None
+
+
 def _get_user_by_username(username):
-    sb = _supabase_table()
-    resp = sb.table("users").select("*").eq("username", username).limit(1).execute()
-    if hasattr(resp, "data") and resp.data:
-        return resp.data[0]
-    return None
+    sb = _supabase()
+    resp = sb.table("users").select("*").eq("username", username).limit(1).execute()  # Query by username
+    return resp.data[0] if resp.data else None
 
-def _insert_user_to_supabase(payload):
-    sb = _supabase_table()
+
+def _get_user_by_id(userid):
+    sb = _supabase()
+    resp = sb.table("users").select("*").eq("userid", userid).limit(1).execute()
+    return resp.data[0] if resp.data else None
+
+
+def _insert_user(payload):
+    sb = _supabase()
     resp = sb.table("users").insert(payload).execute()
-    if hasattr(resp, "data") and resp.data:
-        return resp.data[0]
-    return None
+    return resp.data[0] if resp.data else None
 
-def _update_user_in_supabase(userid, payload):
-    sb = _supabase_table()
+
+def _update_user(userid, payload):
+    sb = _supabase()
     resp = sb.table("users").update(payload).eq("userid", userid).execute()
-    if hasattr(resp, "data") and resp.data:
-        return resp.data[0]
-    return None
+    return resp.data[0] if resp.data else None
 
-# -------------------------------
-# REGISTER VIEW
-# -------------------------------
+
+# ---------------- NAME VALIDATION ----------------
+
+def validate_name(name):
+    # Check if the name contains only letters and spaces
+    if not re.match(r'^[a-zA-Z\s]*$', name):
+        return False  # Invalid name if it contains numbers or special characters
+    return True
+
+
+def sanitize_name(name):
+    # Remove any invalid characters from the name (e.g., numbers, special characters)
+    return re.sub(r'[^a-zA-Z\s]', '', name)
+
+
+# ---------------- CONTACT NUMBER VALIDATION ----------------
+
+def validate_contact(contact):
+    # Ensure the contact number contains exactly 11 digits
+    if len(contact) != 11 or not contact.isdigit():
+        return False  # Invalid if not exactly 11 digits
+    return True
+
+
+# ---------------- REGISTER ----------------
 def register_view(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST, request.FILES)
+        form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            username = form.cleaned_data["username"]
+            firstname = form.cleaned_data["firstname"]
+            lastname = form.cleaned_data["lastname"]
+            middlename = form.cleaned_data["middlename"]
             password = form.cleaned_data["password"]
-            address = form.cleaned_data.get("address", "")
-            contact = form.cleaned_data.get("contact", "")
-            id_proof_file = request.FILES.get("id_proof")
+            address = form.cleaned_data["address"]
+            contact = form.cleaned_data["contact"]
+            username = form.cleaned_data["username"]
 
-            if _get_user_by_username(username):
-                messages.error(request, "Username already exists.")
+            # Check if contact already exists
+            if _get_user_by_contact(contact):
+                messages.error(request, "This contact number is already registered.")
                 return render(request, "register.html", {"form": form})
 
-            id_proof_url = None
-            if id_proof_file:
-                try:
-                    sb = _supabase_table()
-                    bucket = getattr(settings, "SUPABASE_BUCKET", "id_proof")
-                    filename = f"{username}_{id_proof_file.name}"
-                    file_bytes = id_proof_file.read()
+            # Validate contact number
+            if not validate_contact(contact):
+                messages.warning(request, "The contact number must be exactly 11 digits.")
+                return render(request, "register.html", {"form": form})
 
-                    sb.storage.from_(bucket).upload(
-                        filename,
-                        file_bytes,
-                        file_options={"content-type": id_proof_file.content_type}
-                    )
+            # Check if username already exists
+            if _get_user_by_username(username):
+                messages.error(request, "This username is already taken.")
+                return render(request, "register.html", {"form": form})
 
-                    pub = sb.storage.from_(bucket).get_public_url(filename)
-                    id_proof_url = pub.get("publicUrl") if isinstance(pub, dict) else str(pub)
+            # Validate names
+            invalid_names = []
+            for field, value in {"firstname": firstname, "lastname": lastname, "middlename": middlename}.items():
+                if not validate_name(value):
+                    invalid_names.append(
+                        f"The {field} contains invalid characters. Only letters and spaces are allowed.")
+                else:
+                    # Sanitize the name (remove non-alphabetic characters)
+                    value = sanitize_name(value)
 
-                except Exception as e:
-                    messages.warning(request, f"ID upload failed: {str(e)}")
+            if invalid_names:
+                for message in invalid_names:
+                    messages.warning(request, message)
+                return render(request, "register.html", {"form": form})
 
             payload = {
-                "username": username,
+                "firstname": firstname,
+                "lastname": lastname,
+                "middlename": middlename,
                 "password": password,
                 "address": address,
                 "contact": contact,
-                "id_proof": id_proof_url,
-                "role": form.cleaned_data.get("role", "FamilyHead"),
+                "username": username,  # Add username to payload
+                "role": "FamilyHead",
             }
 
-            created = _insert_user_to_supabase(payload)
+            created = _insert_user(payload)
             if not created:
                 messages.error(request, "Registration failed.")
                 return render(request, "register.html", {"form": form})
 
-            request.session["supabase_user"] = {
-                "userid": created.get("userid"),
-                "username": created.get("username"),
-                "role": created.get("role"),
-            }
-
-            return redirect("dashboard", user_id=created.get("userid"))
+            return redirect("register_success", user_id=created["userid"])  # Ensure we pass integer user_id
 
     else:
         form = RegistrationForm()
 
     return render(request, "register.html", {"form": form})
 
-# -------------------------------
-# REGISTER SUCCESS VIEW
-# -------------------------------
+
+# ---------------- REGISTER SUCCESS ----------------
 def register_success_view(request, user_id):
-    session_user = request.session.get("supabase_user")
-    if not session_user or str(session_user.get("userid")) != str(user_id):
-        messages.error(request, "Access denied.")
-        return redirect("login")
+    user = _get_user_by_id(user_id)  # Ensure user_id is treated as integer
+    return render(request, "register_success.html", {"user": user})
 
-    sb = _supabase_table()
-    resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
-    user_row = resp.data[0] if resp.data else None
 
-    return render(request, "register_success.html", {
-        "supabase_user": user_row or session_user,
-        "user_id": user_id,
-    })
-
-# -------------------------------
-# LOGIN VIEW
-# -------------------------------
+# ---------------- LOGIN ----------------
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
+        # Check if the user exists by username
         user = _get_user_by_username(username)
+
         if not user or user.get("password") != password:
             return render(request, "login.html", {"error": "Invalid username or password."})
 
-        request.session["supabase_user"] = {
-            "userid": user.get("userid"),
-            "username": user.get("username"),
-            "role": user.get("role"),
+        # Store user session
+        request.session["user"] = {
+            "userid": user["userid"],
+            "role": user["role"]
         }
 
-        return redirect("dashboard", user_id=user.get("userid"))
-
-    if request.session.get("supabase_user"):
-        uid = request.session["supabase_user"]["userid"]
-        return redirect("dashboard", user_id=uid)
+        return redirect("dashboard", user_id=user["userid"])
 
     return render(request, "login.html")
 
-# -------------------------------
-# DASHBOARD VIEW
-# -------------------------------
+
+# ---------------- DASHBOARD ----------------
+
 def dashboard_view(request, user_id):
-    session_user = request.session.get("supabase_user")
-    if not session_user or str(session_user.get("userid")) != str(user_id):
-        messages.error(request, "Access denied.")
+    # Retrieve the user from session
+    session_user = request.session.get("user")
+
+    # If the user is not authenticated or the user_id doesn't match session user_id, redirect to login
+    if not session_user or str(session_user["userid"]) != str(user_id):
+        messages.error(request, "Unauthorized access.")
         return redirect("login")
 
-    sb = _supabase_table()
-    resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
-    user_row = resp.data[0] if resp.data else None
+    # Get user details by user_id
+    user = _get_user_by_id(user_id)
+    if not user:
+        messages.error(request, "User not found.")
+        return redirect("login")
 
-    initial = {
-        "username": user_row.get("username"),
-        "address": user_row.get("address"),
-        "contact": user_row.get("contact"),
-        "id_proof_url": user_row.get("id_proof"),
-    }
-
+    # Process form submission
     if request.method == "POST":
-        form = DashboardForm(request.POST, request.FILES, initial=initial)
+        form = DashboardForm(request.POST)
         if form.is_valid():
-            address = form.cleaned_data["address"]
-            contact = form.cleaned_data["contact"]
-            id_proof_file = request.FILES.get("id_proof")
-            id_proof_url = user_row.get("id_proof")
-
-            if id_proof_file:
-                try:
-                    bucket = getattr(settings, "SUPABASE_BUCKET", "id_proof")
-                    filename = f"{session_user['username']}_{id_proof_file.name}"
-                    file_bytes = id_proof_file.read()
-
-                    sb.storage.from_(bucket).upload(
-                        filename,
-                        file_bytes,
-                        file_options={"content-type": id_proof_file.content_type}
-                    )
-
-                    pub = sb.storage.from_(bucket).get_public_url(filename)
-                    id_proof_url = pub.get("publicUrl") if isinstance(pub, dict) else str(pub)
-
-                except Exception as e:
-                    messages.warning(request, f"Upload failed: {str(e)}")
-
-            _update_user_in_supabase(user_id, {
-                "address": address,
-                "contact": contact,
-                "id_proof": id_proof_url,
+            # Update user details
+            _update_user(user_id, {
+                "address": form.cleaned_data["address"],
+                "contact": form.cleaned_data["contact"],
             })
-
             messages.success(request, "Profile updated.")
             return redirect("dashboard", user_id=user_id)
-
     else:
-        form = DashboardForm(initial=initial)
+        # If it's GET request, display the form with initial values
+        form = DashboardForm(initial={
+            "address": user.get("address", ""),  # Ensure 'address' exists
+            "contact": user.get("contact", ""),  # Ensure 'contact' exists
+        })
 
-    return render(request, "dashboard.html", {
-        "form": form,
-        "supabase_user": user_row,
-        "user_id": user_id,
-    })
+    # Pass user data and form to the template
+    return render(request, "dashboard.html", {"user": user, "form": form, "user_id": user_id})
 
-# -------------------------------
-# LOGOUT VIEW
-# -------------------------------
+
+# ---------------- LOGOUT ----------------
 def logout_view(request):
     request.session.flush()
     return redirect("login")
 
-# -------------------------------
-# INVENTORY VIEW
-# -------------------------------
+
+# ---------------- ADMIN LOGIN ----------------
+def admin_login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        # Admin login check (use your admin credentials or logic here)
+        if username == "admin" and password == "adminpassword":  # Adjust logic as needed
+            return render(request, "admin_dashboard.html")  # Redirect to admin dashboard
+        else:
+            return render(request, "admin_login.html", {"error": "Invalid credentials"})
+
+    return render(request, "admin_login.html")
+
+
+# ---------------- INVENTORY ----------------
 def inventory_view(request):
-    session_user = request.session.get("supabase_user")
+    session_user = request.session.get("user")
+
     if not session_user:
         return redirect("login")
 
-    if session_user.get("role") != "Admin":
-        messages.error(request, "Admin only.")
+    if session_user["role"] != "Admin":
+        messages.error(request, "Admins only.")
         return redirect("dashboard", user_id=session_user["userid"])
 
     if request.method == "POST":
@@ -262,7 +254,7 @@ def inventory_view(request):
             item, created = Inventory.objects.get_or_create(
                 name=item_name,
                 category=category,
-                defaults={"quantity": int(quantity)},
+                defaults={"quantity": int(quantity)}
             )
             if not created:
                 item.quantity = int(quantity)
@@ -270,31 +262,20 @@ def inventory_view(request):
 
             messages.success(request, f"{item_name} saved.")
 
-    return render(request, "inventory.html", {
-        "inventory": Inventory.objects.all(),
-        "user_id": session_user["userid"]
-    })
+    return render(request, "inventory.html", {"inventory": Inventory.objects.all()})
 
-# -------------------------------
-# VIEW-ONLY DASHBOARD VIEW
-# -------------------------------
+
+# ---------------- VIEW ONLY DASHBOARD ----------------
 def view_only_dashboard(request, user_id):
-    session_user = request.session.get("supabase_user")
-    if not session_user or str(session_user.get("userid")) != str(user_id):
-        messages.error(request, "Access denied.")
+    # Ensure user data is fetched properly
+    user = _get_user_by_id(user_id)
+    if not user:
+        messages.error(request, "User not found.")
         return redirect("login")
 
-    sb = _supabase_table()
-    resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
-    user_row = resp.data[0] if resp.data else None
+    return render(request, "view_only_dashboard.html", {"user": user, "user_id": user_id})
 
-    return render(request, "view_only_dashboard.html", {
-        "supabase_user": user_row or session_user,
-        "user_id": user_id,
-    })
-#to view the inventory temporary
+
+# ---------------- ADMIN STATIC PAGES ----------------
 def admin_inventory(request):
     return render(request, "admin_inventory.html")
-#to view admin login page
-def admin_login(request):
-    return render(request, "admin_login.html")
