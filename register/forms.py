@@ -1,7 +1,7 @@
 from django import forms
 
 class RegistrationForm(forms.Form):
-    username = forms.CharField(max_length=150, required=True, label="Username")  # Added username field
+    username = forms.CharField(max_length=150, required=True, label="Username")
     lastname = forms.CharField(max_length=100, required=True, label="Last Name")
     firstname = forms.CharField(max_length=100, required=True, label="First Name")
     middlename = forms.CharField(max_length=100, required=False, label="Middle Name")  # Optional middle name
