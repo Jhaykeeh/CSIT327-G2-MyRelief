@@ -6,7 +6,6 @@
   <title>MyRelief Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* --- Body Styling --- */
     body {
       margin: 0;
       padding: 0;
@@ -18,7 +17,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* --- Full Split Layout --- */
     .login-container {
       display: flex;
       width: 100%;
@@ -26,7 +24,6 @@
       overflow: hidden;
     }
 
-    /* LEFT SIDE */
     .left-side {
       flex: 1;
       background-image: url('https://t4.ftcdn.net/jpg/04/80/07/21/360_F_480072179_z17gw2gvY8AJfAnzIlT37YCrX8ehdjpJ.jpg');
@@ -76,13 +73,12 @@
       text-align: center;
     }
 
-    /* Heading with custom font */
     .right-side h2 {
       font-size: 2.8rem;
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
       margin-bottom: 30px;
-      color: #3A5A40; /* Dark Green */
+      color: #3A5A40;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       position: relative;
@@ -100,72 +96,6 @@
       border-radius: 2px;
     }
 
-    /* Role Selector Section - Made more compact */
-    .role-select {
-      width: 70%;
-      max-width: 350px;
-      margin-bottom: 30px;
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .role-select h3 {
-      font-size: 1.1rem;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    .role-options {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .role-option {
-      flex: 1;
-      max-width: 120px;
-      padding: 10px 15px;
-      background: #f4f4f4;
-      border-radius: 12px;
-      text-align: center;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      opacity: 0.8;
-      border: 2px solid transparent;
-      font-size: 0.9rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .role-option.selected {
-      border-color: #3A5A40;
-      background-color: #e9f5ec;
-      color: #3A5A40;
-      opacity: 1;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(58, 90, 64, 0.2);
-    }
-
-    .role-option.admin-selected {
-      border-color: #007bff;
-      background-color: #cce5ff;
-      color: #007bff;
-      opacity: 1;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
-    }
-
-    .role-option:hover {
-      background: #f0f0f0;
-      transform: translateY(-1px);
-    }
-
-    /* Form Styling */
     .login-form {
       width: 70%;
       max-width: 350px;
@@ -205,7 +135,6 @@
       box-shadow: 0 0 0 3px rgba(58, 90, 64, 0.1);
     }
 
-    /* Sign In Button Styling */
     .btn {
       width: 100%;
       padding: 14px;
@@ -226,10 +155,6 @@
       background-color: #2C4A32;
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(44, 74, 50, 0.2);
-    }
-
-    .btn:active {
-      transform: translateY(0);
     }
 
     .signup-link {
@@ -265,7 +190,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 1024px) {
       .login-container {
         flex-direction: column;
@@ -330,33 +254,17 @@
 </head>
 
 <body>
-
   <div class="login-container">
-    <!-- LEFT SIDE -->
     <div class="left-side">
       <p>Welcome to</p>
       <h1>MyRelief!</h1>
-      <div class="half-circle"></div>
     </div>
 
-    <!-- RIGHT SIDE -->
     <div class="right-side">
-      <!-- ROLE SELECTOR -->
-      <div class="role-select">
-        <h3>Login as:</h3>
-        <div class="role-options">
-          <div class="role-option selected" data-role="User">User</div>
-          <div class="role-option" data-role="Admin">Admin</div>
-        </div>
-      </div>
-
       <h2>Log In</h2>
 
       <form method="POST" action="{% url 'login' %}" class="login-form">
         {% csrf_token %}
-
-        <!-- Hidden field to store the selected role -->
-        <input type="hidden" id="roleInput" name="role" value="User">
 
         <div class="form-group">
           <label for="username">Username</label>
@@ -380,31 +288,7 @@
         </div>
         {% endif %}
       </form>
-
     </div>
   </div>
-
-  <script>
-    // Handle selecting the role
-    const options = document.querySelectorAll('.role-option');
-    const roleInput = document.getElementById('roleInput');
-
-    options.forEach(option => {
-      option.addEventListener('click', () => {
-
-        // Remove previous highlight
-        options.forEach(opt => {
-          opt.classList.remove('selected', 'admin-selected');
-        });
-
-        // Highlight selected role
-        option.classList.add(option.dataset.role === 'Admin' ? 'admin-selected' : 'selected');
-
-        // Set hidden input value
-        roleInput.value = option.dataset.role;
-      });
-    });
-  </script>
-
 </body>
 </html>
