@@ -12,23 +12,19 @@ try:
 except Exception:
     _HAS_UTILS = False
 
-
 # -------------------------------
-# SUPABASE CLIENT (CLEAN + FIXED)
+# SUPABASE CLIENT (LOCAL + RENDER READY)
 # -------------------------------
 try:
     from supabase import create_client
 
-    SUPABASE_URL = getattr(
-        settings,
-        "SUPABASE_URL",
-        os.getenv("SUPABASE_URL", "")
-    )
-
+    SUPABASE_URL = getattr(settings, "SUPABASE_URL", os.getenv("SUPABASE_URL", ""))
+    
+    # Use SERVICE_KEY for local/server-side, ANON_KEY can be used for client if needed
     SUPABASE_KEY = getattr(
-        settings,
-        "SUPABASE_KEY",
-        os.getenv("SUPABASE_KEY", "")
+        settings, 
+        "SUPABASE_SERVICE_KEY", 
+        os.getenv("SUPABASE_SERVICE_KEY", "")
     )
 
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -36,12 +32,10 @@ try:
 except Exception:
     supabase = None
 
-
 def _supabase_table():
     if supabase is None:
         raise RuntimeError("Supabase is not configured. Check SUPABASE_URL and SUPABASE_KEY.")
     return supabase
-
 
 # -------------------------------
 # HELPERS
@@ -53,7 +47,6 @@ def _get_user_by_username(username):
         return resp.data[0]
     return None
 
-
 def _insert_user_to_supabase(payload):
     sb = _supabase_table()
     resp = sb.table("users").insert(payload).execute()
@@ -61,14 +54,12 @@ def _insert_user_to_supabase(payload):
         return resp.data[0]
     return None
 
-
 def _update_user_in_supabase(userid, payload):
     sb = _supabase_table()
     resp = sb.table("users").update(payload).eq("userid", userid).execute()
     if hasattr(resp, "data") and resp.data:
         return resp.data[0]
     return None
-
 
 # -------------------------------
 # REGISTER VIEW
@@ -84,12 +75,10 @@ def register_view(request):
             contact = form.cleaned_data.get("contact", "")
             id_proof_file = request.FILES.get("id_proof")
 
-            # Check user exists
             if _get_user_by_username(username):
                 messages.error(request, "Username already exists.")
                 return render(request, "register.html", {"form": form})
 
-            # Upload ID proof
             id_proof_url = None
             if id_proof_file:
                 try:
@@ -110,7 +99,6 @@ def register_view(request):
                 except Exception as e:
                     messages.warning(request, f"ID upload failed: {str(e)}")
 
-            # Insert user
             payload = {
                 "username": username,
                 "password": password,
@@ -131,7 +119,6 @@ def register_view(request):
                 "role": created.get("role"),
             }
 
-            # Redirect to dashboard on successful registration
             return redirect("dashboard", user_id=created.get("userid"))
 
     else:
@@ -139,21 +126,15 @@ def register_view(request):
 
     return render(request, "register.html", {"form": form})
 
-
 # -------------------------------
 # REGISTER SUCCESS VIEW
 # -------------------------------
 def register_success_view(request, user_id):
-    """
-    Simple page shown after registration.
-    This matches the URL: path('register/success/<int:user_id>/', views.register_success_view, ...)
-    """
     session_user = request.session.get("supabase_user")
     if not session_user or str(session_user.get("userid")) != str(user_id):
         messages.error(request, "Access denied.")
         return redirect("login")
 
-    # Optionally fetch fresh user data from Supabase
     sb = _supabase_table()
     resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
     user_row = resp.data[0] if resp.data else None
@@ -162,7 +143,6 @@ def register_success_view(request, user_id):
         "supabase_user": user_row or session_user,
         "user_id": user_id,
     })
-
 
 # -------------------------------
 # LOGIN VIEW
@@ -176,7 +156,6 @@ def login_view(request):
         if not user or user.get("password") != password:
             return render(request, "login.html", {"error": "Invalid username or password."})
 
-        # login success
         request.session["supabase_user"] = {
             "userid": user.get("userid"),
             "username": user.get("username"),
@@ -190,7 +169,6 @@ def login_view(request):
         return redirect("dashboard", user_id=uid)
 
     return render(request, "login.html")
-
 
 # -------------------------------
 # DASHBOARD VIEW
@@ -214,12 +192,10 @@ def dashboard_view(request, user_id):
 
     if request.method == "POST":
         form = DashboardForm(request.POST, request.FILES, initial=initial)
-
         if form.is_valid():
             address = form.cleaned_data["address"]
             contact = form.cleaned_data["contact"]
             id_proof_file = request.FILES.get("id_proof")
-
             id_proof_url = user_row.get("id_proof")
 
             if id_proof_file:
@@ -240,14 +216,11 @@ def dashboard_view(request, user_id):
                 except Exception as e:
                     messages.warning(request, f"Upload failed: {str(e)}")
 
-            _update_user_in_supabase(
-                user_id,
-                {
-                    "address": address,
-                    "contact": contact,
-                    "id_proof": id_proof_url,
-                }
-            )
+            _update_user_in_supabase(user_id, {
+                "address": address,
+                "contact": contact,
+                "id_proof": id_proof_url,
+            })
 
             messages.success(request, "Profile updated.")
             return redirect("dashboard", user_id=user_id)
@@ -256,13 +229,10 @@ def dashboard_view(request, user_id):
         form = DashboardForm(initial=initial)
 
     return render(request, "dashboard.html", {
-    "form": form,
-    "supabase_user": user_row,
-    "user_id": user_id,  # Ensure `user_id` is in context here
-})
-
-
-
+        "form": form,
+        "supabase_user": user_row,
+        "user_id": user_id,
+    })
 
 # -------------------------------
 # LOGOUT VIEW
@@ -271,13 +241,11 @@ def logout_view(request):
     request.session.flush()
     return redirect("login")
 
-
 # -------------------------------
 # INVENTORY VIEW
 # -------------------------------
 def inventory_view(request):
     session_user = request.session.get("supabase_user")
-
     if not session_user:
         return redirect("login")
 
@@ -296,7 +264,6 @@ def inventory_view(request):
                 category=category,
                 defaults={"quantity": int(quantity)},
             )
-
             if not created:
                 item.quantity = int(quantity)
                 item.save()
@@ -308,23 +275,19 @@ def inventory_view(request):
         "user_id": session_user["userid"]
     })
 
-
 # -------------------------------
 # VIEW-ONLY DASHBOARD VIEW
 # -------------------------------
 def view_only_dashboard(request, user_id):
-    # Check if the user is logged in and matches the user_id
     session_user = request.session.get("supabase_user")
     if not session_user or str(session_user.get("userid")) != str(user_id):
         messages.error(request, "Access denied.")
         return redirect("login")
 
-    # Fetch user data from Supabase or session
     sb = _supabase_table()
     resp = sb.table("users").select("*").eq("userid", user_id).limit(1).execute()
     user_row = resp.data[0] if resp.data else None
 
-    # Pass the user data to the view-only template
     return render(request, "view_only_dashboard.html", {
         "supabase_user": user_row or session_user,
         "user_id": user_id,
