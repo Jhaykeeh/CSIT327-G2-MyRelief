@@ -39,14 +39,15 @@
 
 # Team members (Name, Role, CIT-U Email)
 
-- **Jorge Martin M. Ogang**, *Developer*, email: **jorgemartin.ogang@cit.edu**
-- **Judd Kristoffer Mayuela**, *Lead Developer*, email: **juddkristoffer.mayuela@cit.edu**
+- **Jorge Martin M. Ogang**, *Lead Developer*, email: **jorgemartin.ogang@cit.edu**
+- **Judd Kristoffer Mayuela**, *Developer*, email: **juddkristoffer.mayuela@cit.edu**
 - **Gerad Emeka T. Macopia**, *Developer*, email: **gerademeka.macopia@cit.edu**
 
 
 
 # Deployed link 
 - https://csit327-g2-myrelief.onrender.com
+
 
 
 
