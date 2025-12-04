@@ -1,56 +1,267 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyRelief Admin Login</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/admin_login.css' %}">
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .left-side {
+      flex: 1;
+      background-image: url('https://plus.unsplash.com/premium_photo-1681701932128-17445c8ae68b?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    .left-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.35);
+    }
+
+    .left-side h1 {
+      font-size: 6rem;
+      font-weight: 800;
+      margin: 0;
+      margin-bottom: 10px;
+      z-index: 1;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      font-family: 'Raleway', sans-serif;
+    }
+
+    .left-side .tagline {
+      font-size: 1.2rem;
+      font-weight: 300;
+      margin-top: 10px;
+      z-index: 1;
+      max-width: 70%;
+      line-height: 1.4;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .admin-badge {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: #043927;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 1;
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    /* RIGHT SECTION */
+    .right-side {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      text-align: center;
+    }
+
+    .right-side h2 {
+      font-size: 2.8rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: #043927;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .right-side h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(to right, #043927, #6C7C59);
+      border-radius: 2px;
+    }
+
+    /* FORM WRAPPER */
+    .form-wrapper {
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form-group {
+      width: 100%;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+      padding-left: 5px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #043927;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(4, 57, 39, 0.1);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #043927;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn:hover {
+      background-color: #6C7C59;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(4, 57, 39, 0.2);
+    }
+
+    .error-message {
+      color: #dc3545;
+      margin-top: 15px;
+      padding: 10px;
+      background-color: #f8d7da;
+      border-radius: 8px;
+      border: 1px solid #f5c6cb;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1024px) {
+      .login-container {
+        flex-direction: column;
+      }
+
+      .left-side {
+        height: 30vh;
+      }
+
+      .right-side {
+        height: 70vh;
+      }
+
+      .left-side h1 {
+        font-size: 4rem;
+      }
+
+      .left-side .tagline {
+        font-size: 1rem;
+      }
+
+      .right-side h2 {
+        font-size: 2rem;
+      }
+
+      .form-wrapper {
+        width: 90%;
+        max-width: 350px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
   <div class="login-container">
-
     <div class="left-side">
-      <p>Admin Panel</p>
+      <div class="admin-badge">ADMIN PANEL</div>
       <h1>MyRelief</h1>
+      <p class="tagline">Disaster Relief Management System</p>
     </div>
 
     <div class="right-side">
+      <h2>Admin Sign In</h2>
 
-      <h2>Admin Login</h2>
+      <div class="form-wrapper">
+        <form method="POST" action="{% url 'admin_login' %}">
+          {% csrf_token %}
 
-      <!-- Form now STRICTLY for admins -->
-      <form method="POST" action="{% url 'admin_login' %}" class="login-form">
-        {% csrf_token %}
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your admin username" required>
+          </div>
 
-        <input type="hidden" name="role" value="Admin">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your admin password" required>
+          </div>
 
-        <div class="form-group">
-          <label for="username">Admin Username</label>
-          <input type="text" id="username" name="username" required>
-        </div>
+          <button type="submit" class="btn">Sign In</button>
 
-        <div class="form-group">
-          <label for="password">Admin Password</label>
-          <input type="password" id="password" name="password" required>
-        </div>
-
-        <button type="submit" class="btn">Sign In</button>
-        <a href="admin_inventory.html">proceed</a>
-        {% if error %}
-        <div class="error-message">
-          {{ error }}
-        </div>
-        {% endif %}
-      </form>
-
+          {% if error %}
+          <div class="error-message">
+            {{ error }}
+          </div>
+          {% endif %}
+        </form>
+      </div>
     </div>
   </div>
-
 </body>
 </html>
