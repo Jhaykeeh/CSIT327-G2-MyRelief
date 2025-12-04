@@ -290,18 +290,20 @@
         <div class="filter-section">
             <div class="filter-group">
                 <label for="city">City:</label>
-                <select id="city" name="city">
-                    <option value="cebu">Cebu City</option>
-                    <option value="mandaue">Mandaue City</option>
-                    <option value="lapu">Lapu-Lapu City</option>
+                <select id="city" name="city" onchange="filterResidents()">
+                    <option value="">All Cities</option>
+                    {% for city in cities %}
+                        <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="filter-group">
                 <label for="barangay">Barangay:</label>
-                <select id="barangay" name="barangay">
-                    <option value="lahug">Lahug</option>
-                    <option value="mabolo">Mabolo</option>
-                    <option value="banilad">Banilad</option>
+                <select id="barangay" name="barangay" onchange="filterResidents()">
+                    <option value="">All Barangays</option>
+                    {% for barangay in barangays %}
+                        <option value="{{ barangay }}" {% if barangay == selected_barangay %}selected{% endif %}>{{ barangay }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>
@@ -316,51 +318,37 @@
                         <tr>
                             <th>Name</th>
                             <th>Address</th>
+                            <th>City</th>
+                            <th>Barangay</th>
                             <th>Contact</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>Purok 3, Lahug</td>
-                            <td>09123456789</td>
-                            <td>
-                                <span class="status-badge badge-given">
-                                    ✓ Given
-                                </span>
-                            </td>
-                            <td>
-                                <button class="status-button btn-mark-not-yet" onclick="updateStatus(this, 'not-yet')">Mark Not Yet</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Maria Santos</td>
-                            <td>Purok 1, Lahug</td>
-                            <td>09198765432</td>
-                            <td>
-                                <span class="status-badge badge-not-yet">
-                                    ✗ Not Yet
-                                </span>
-                            </td>
-                            <td>
-                                <button class="status-button btn-mark-given" onclick="updateStatus(this, 'given')">Mark Given</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Pedro Garcia</td>
-                            <td>Purok 2, Lahug</td>
-                            <td>09111234567</td>
-                            <td>
-                                <span class="status-badge badge-not-yet">
-                                    ✗ Not Yet
-                                </span>
-                            </td>
-                            <td>
-                                <button class="status-button btn-mark-given" onclick="updateStatus(this, 'given')">Mark Given</button>
-                            </td>
-                        </tr>
+                        {% if residents %}
+                            {% for resident in residents %}
+                                <tr>
+                                    <td>{{ resident.firstname }} {{ resident.lastname }}</td>
+                                    <td>{{ resident.address }}</td>
+                                    <td>{{ resident.city }}</td>
+                                    <td>{{ resident.barangay }}</td>
+                                    <td>{{ resident.contact }}</td>
+                                    <td>
+                                        <span class="status-badge badge-not-yet">
+                                            ✗ Not Yet
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="status-button btn-mark-given" onclick="updateStatus(this, 'given')">Mark Given</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 20px;">No residents found</td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -379,6 +367,22 @@
     {% endif %}
 
     <script>
+        function filterResidents() {
+            const city = document.getElementById('city').value;
+            const barangay = document.getElementById('barangay').value;
+            
+            let url = '{% url "admin_residents" %}';
+            const params = new URLSearchParams();
+            if (city) params.append('city', city);
+            if (barangay) params.append('barangay', barangay);
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            window.location.href = url;
+        }
+
         function updateStatus(button, status) {
             const row = button.closest('tr');
             const statusBadge = row.querySelector('.status-badge');

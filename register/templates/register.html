@@ -227,6 +227,24 @@
             {% endif %}
         </div>
 
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.city.id_for_label }}">City</label>
+                {{ form.city }}
+                {% if form.city.errors %}
+                    <div class="error-message">{{ form.city.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.barangay.id_for_label }}">Barangay</label>
+                {{ form.barangay }}
+                {% if form.barangay.errors %}
+                    <div class="error-message">{{ form.barangay.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="form-group">
             <label for="{{ form.contact.id_for_label }}">Contact Number</label>
             {{ form.contact }}

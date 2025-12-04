@@ -4,6 +4,8 @@ class Registration(models.Model):
     username = models.CharField(max_length=150, unique=True)
     address = models.TextField()
     contact = models.CharField(max_length=15)
+    city = models.CharField(max_length=100, default='')
+    barangay = models.CharField(max_length=100, default='')
     id_proof_url = models.URLField(blank=True, null=True)
 
     def __str__(self):

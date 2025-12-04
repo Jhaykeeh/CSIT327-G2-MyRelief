@@ -90,6 +90,8 @@ def register_view(request):
             address = form.cleaned_data["address"]
             contact = form.cleaned_data["contact"]
             username = form.cleaned_data["username"]
+            city = form.cleaned_data["city"]
+            barangay = form.cleaned_data["barangay"]
 
             # Check if contact already exists
             if _get_user_by_contact(contact):
@@ -129,6 +131,8 @@ def register_view(request):
                 "address": address,
                 "contact": contact,
                 "username": username,  # Add username to payload
+                "city": city,
+                "barangay": barangay,
                 "role": "FamilyHead",
             }
 
@@ -199,6 +203,8 @@ def dashboard_view(request, user_id):
             _update_user(user_id, {
                 "address": form.cleaned_data["address"],
                 "contact": form.cleaned_data["contact"],
+                "city": form.cleaned_data["city"],
+                "barangay": form.cleaned_data["barangay"],
             })
             messages.success(request, "Profile updated.")
             return redirect("dashboard", user_id=user_id)
@@ -207,6 +213,8 @@ def dashboard_view(request, user_id):
         form = DashboardForm(initial={
             "address": user.get("address", ""),  # Ensure 'address' exists
             "contact": user.get("contact", ""),  # Ensure 'contact' exists
+            "city": user.get("city", ""),
+            "barangay": user.get("barangay", ""),
         })
 
     # Pass user data and form to the template
@@ -309,7 +317,35 @@ def admin_residents(request):
         messages.error(request, "Admins only.")
         return redirect("login")
 
-    return render(request, "admin_residents.html")
+    # Fetch all residents from Supabase
+    sb = _supabase()
+    resp = sb.table("users").select("*").eq("role", "FamilyHead").execute()
+    all_residents = resp.data if resp.data else []
+
+    # Get unique cities and barangays from residents
+    cities = list(set([r.get("city", "") for r in all_residents if r.get("city")]))
+    cities.sort()
+    barangays = list(set([r.get("barangay", "") for r in all_residents if r.get("barangay")]))
+    barangays.sort()
+
+    # Get filter parameters from request
+    selected_city = request.GET.get("city", "")
+    selected_barangay = request.GET.get("barangay", "")
+
+    # Filter residents based on selection
+    residents = all_residents
+    if selected_city:
+        residents = [r for r in residents if r.get("city") == selected_city]
+    if selected_barangay:
+        residents = [r for r in residents if r.get("barangay") == selected_barangay]
+
+    return render(request, "admin_residents.html", {
+        "residents": residents,
+        "cities": cities,
+        "barangays": barangays,
+        "selected_city": selected_city,
+        "selected_barangay": selected_barangay,
+    })
 
 
 # ---------------- VIEW ONLY DASHBOARD ----------------
