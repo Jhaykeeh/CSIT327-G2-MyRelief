@@ -2,339 +2,430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Relief Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<style>
-    /* Global Styles */
-    body {
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-        display: flex;
-        justify-content: flex-start;
-        align-items: stretch;
-        min-height: 100vh;
-    }
-
-    /* Top Bar */
-    .top-bar {
-        background-color: #2E4D32; /* Dark Olive */
-        color: white;
-        display: flex;
-        justify-content: center; /* Center "MyRelief" */
-        align-items: center;
-        padding: 10px 30px;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .top-bar h1 {
-        font-size: 2rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .top-bar .icons {
-        position: absolute;
-        right: 30px;
-        display: flex;
-        align-items: center;
-    }
-
-    .top-bar .icons i {
-        font-size: 1.5rem;
-        color: white;
-        margin-left: 20px;
-        cursor: pointer;
-        transition: color 0.3s;
-    }
-
-    .top-bar .icons i:hover {
-        color: #A0B572; /* Olive Hover */
-    }
-
-    /* Sidebar Styles */
-    .sidebar {
-        background-color: #2E4D32;
-        color: white;
-        width: 240px;
-        padding: 30px 20px;
-        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; 
-        height: 100vh;
-        position: fixed;
-        border-radius: 10px;
-        margin-top: 100px;
-        transition: all 0.3s ease;
-    }
-
-    .sidebar h2 {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    .sidebar a {
-        color: white;
-        text-decoration: none;
-        padding: 12px 24px;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        font-size: 1.2rem;
-        display: flex;
-        align-items: center;
-        transition: background-color 0.3s ease;
-        margin-top: 10px;
-    }
-
-    .sidebar a:hover {
-        background-color: #A0B572;
-    }
-
-    .sidebar a i {
-        margin-right: 10px;
-    }
-
-    /* Main Content */
-    .main-content {
-        margin-left: 270px; 
-        padding: 30px 50px;
-        flex-grow: 1;
-        background-color: #f4f4f4;
-        animation: fadeIn 1s ease-in-out;
-        border-radius: 10px;
-        margin-top: 90px;
-    }
-
-    /* Header and Stats */
-    .stats-header {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-        gap: 30px;
-    }
-
-    .stat-box {
-        background-color: #A0B572;
-        color: white;
-        padding: 30px;
-        border-radius: 15px;
-        width: 30%;
-        text-align: center;
-        font-size: 1.5rem;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-    .stat-box:hover {
-        background-color: #8A9A5B;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .stat-box span {
-        display: block;
-        font-size: 2rem;
-        font-weight: 700;
-    }
-
-    /* Table Styles */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 30px;
-        background-color: white;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    th, td {
-        padding: 18px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    th {
-        background-color: #2E4D32;
-        color: white;
-    }
-
-    tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    tr:last-child td {
-        border-bottom: none;
-    }
-
-    /* Account Button Styles */
-    .settings-btn {
-        background-color: #2E4D32;
-        color: rgb(255, 255, 255);
-        padding: 12px 24px;
-        border-radius: 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        text-decoration: none;
-        margin-top: 40px;
-    }
-
-    .settings-btn:hover {
-        background-color: #A0B572;
-        transform: translateX(10px);
-    }
-
-    .settings-btn i {
-        margin-right: 10px;
-    }
-
-    /* Logout Button Styles */
-    .logout-btn {
-        background-color: #ff5c5c;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        text-decoration: none;
-        margin-top: 10px; 
-    }
-
-    .logout-btn:hover {
-        background-color: #5d1cb3;
-        transform: translateX(10px);
-    }
-
-    .logout-btn i {
-        margin-right: 10px;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .stats-header {
-            flex-direction: column;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyRelief - Distribution History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .stat-box {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e0f2e0 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, #444C38 0%, #043927 100%);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(4, 57, 39, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-family: 'Raleway', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(4, 57, 39, 0.2);
+        }
+
+        /* Header Section */
+        .header {
             width: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, rgba(68, 76, 56, 0.03), rgba(4, 57, 39, 0.05));
+        }
+
+        .header h1 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #043927;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #6C7C59;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            animation: fadeIn 0.6s ease 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(4, 57, 39, 0.08);
+            border-left: 4px solid #6C7C59;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(4, 57, 39, 0.15);
+        }
+
+        .stat-label {
+            font-weight: 600;
+            color: #043927;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-family: 'Raleway', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #043927;
+            margin-bottom: 5px;
+        }
+
+        .stat-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Distributions Section */
+        .section-title {
+            font-family: 'Raleway', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #043927;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #6C7C59;
+        }
+
+        /* Distribution Cards */
+        .distribution-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .distribution-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(4, 57, 39, 0.08);
+            border-left: 4px solid #6C7C59;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .distribution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(4, 57, 39, 0.12);
+        }
+
+        .distribution-icon {
+            font-size: 3rem;
+            color: #043927;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(4, 57, 39, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .distribution-content {
+            flex: 1;
+        }
+
+        .distribution-type {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #043927;
+            margin-bottom: 8px;
+        }
+
+        .distribution-details {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .detail-item i {
+            color: #6C7C59;
+            font-size: 1.1rem;
+        }
+
+        .distribution-notes {
+            font-size: 0.9rem;
+            color: #999;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: linear-gradient(135deg, rgba(4, 57, 39, 0.1), rgba(108, 122, 89, 0.05));
+            color: #043927;
+            border: 1px solid rgba(108, 122, 89, 0.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(4, 57, 39, 0.08);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #6C7C59;
             margin-bottom: 20px;
+            opacity: 0.5;
         }
 
-        .sidebar {
-            width: 200px;
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #043927;
+            margin-bottom: 10px;
+            font-family: 'Raleway', sans-serif;
         }
 
-        .main-content {
-            margin-left: 0;
-            padding: 20px;
+        .empty-state p {
+            color: #999;
+            font-size: 1rem;
         }
-    }
-</style>
+
+        /* Back Button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #043927, #6C7C59);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 8px 20px rgba(4, 57, 39, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 0.95rem; }
+            .navbar { padding: 15px 20px; }
+            .navbar-brand { font-size: 22px; }
+            .container { padding: 20px 15px; }
+            
+            .distribution-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .distribution-details {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Top Bar -->
-<div class="top-bar">
-    <h1>MyRelief!</h1>
-    <div class="icons">
-        <i class="fas fa-search"></i>
-        <i class="fas fa-bell"></i>
+<!-- Navigation Bar -->
+<div class="navbar">
+    <div class="navbar-brand">MyRelief</div>
+    <div class="navbar-menu">
+        <a href="{% url 'dashboard' user_id=user_id %}">← Back to Dashboard</a>
+        <a href="{% url 'logout' %}">Logout</a>
     </div>
 </div>
 
-<!-- Sidebar -->
-<div class="sidebar">
-    <h2>MyRelief</h2>
-    <!-- Account Button -->
-    <a href="{% url 'dashboard' user_id=user_id %}" class="settings-btn">
-    <i class="fas fa-cog"></i> Account
-</a>
-
-
-    <!-- Logout Button -->
-    <a href="{% url 'logout' %}" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
+<!-- Header -->
+<div class="header">
+    <h1>Distribution History</h1>
+    <p>Track your relief distributions and benefits received</p>
 </div>
 
 <!-- Main Content -->
-<div class="main-content">
+<div class="container">
+    <!-- Statistics Cards -->
+    <div class="stats-section">
+        <div class="stat-card">
+            <div class="stat-label"><i class='bx bx-package'></i> Total Reliefs Received</div>
+            <div class="stat-value">{{ total_reliefs }}</div>
+            <div class="stat-description">Number of relief distributions</div>
+        </div>
 
-    <!-- Stats Header -->
-    <div class="stats-header">
-        <div class="stat-box">
-            <span>Total Reliefs Received</span>
-            5
+        <div class="stat-card">
+            <div class="stat-label"><i class='bx bx-tag'></i> Relief Types</div>
+            <div class="stat-value" style="font-size: 1.3rem;">{{ relief_types }}</div>
+            <div class="stat-description">Categories received</div>
         </div>
-        <div class="stat-box">
-            <span>Relief Type</span>
-            Food, Medicine
-        </div>
-        <div class="stat-box">
-            <span>Stock Remaining</span>
-            50
+
+        <div class="stat-card">
+            <div class="stat-label"><i class='bx bx-user'></i> Beneficiary</div>
+            <div class="stat-value" style="font-size: 1.3rem;">{{ user.firstname }} {{ user.lastname }}</div>
+            <div class="stat-description">{{ user.city }}, {{ user.barangay }}</div>
         </div>
     </div>
 
-    <!-- Family Records Table -->
-    <h2>Your Relief Records</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Relief ID</th>
-                <th>Relief Type</th>
-                <th>Date Received</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>R001</td>
-                <td>Food</td>
-                <td>2025-11-15</td>
-            </tr>
-            <tr>
-                <td>R002</td>
-                <td>Medicine</td>
-                <td>2025-11-16</td>
-            </tr>
-            <tr>
-                <td>R003</td>
-                <td>Food</td>
-                <td>2025-11-18</td>
-            </tr>
-            <tr>
-                <td>R004</td>
-                <td>Food</td>
-                <td>2025-11-20</td>
-            </tr>
-            <tr>
-                <td>R005</td>
-                <td>Medicine</td>
-                <td>2025-11-21</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- Distribution Records -->
+    <h2 class="section-title">
+        <i class='bx bx-history'></i> Your Relief Records
+    </h2>
 
+    {% if distributions %}
+        <div class="distribution-list">
+            {% for distribution in distributions %}
+                <div class="distribution-card">
+                    <div class="distribution-icon">
+                        {% if 'Food' in distribution.relief_type %}
+                            <i class='bx bx-food-menu'></i>
+                        {% elif 'Medicine' in distribution.relief_type %}
+                            <i class='bx bx-plus-medical'></i>
+                        {% elif 'Clothing' in distribution.relief_type %}
+                            <i class='bx bx-shopping-bag'></i>
+                        {% else %}
+                            <i class='bx bx-package'></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="distribution-content">
+                        <div class="distribution-type">{{ distribution.relief_type }}</div>
+                        <div class="distribution-details">
+                            <div class="detail-item">
+                                <i class='bx bx-calendar'></i>
+                                {{ distribution.date_given|date:"M d, Y" }}
+                            </div>
+                            <div class="detail-item">
+                                <i class='bx bx-time'></i>
+                                {{ distribution.date_given|date:"h:i A" }}
+                            </div>
+                        </div>
+                        {% if distribution.notes %}
+                            <div class="distribution-notes">{{ distribution.notes }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="status-badge">
+                        <i class='bx bx-check-circle'></i>
+                        Given
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class='bx bx-inbox'></i>
+            <h3>No Distribution Records</h3>
+            <p>You haven't received any relief distributions yet. Check back soon!</p>
+        </div>
+    {% endif %}
 </div>
 
 </body>
