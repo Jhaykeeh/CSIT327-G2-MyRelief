@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from .forms import RegistrationForm, DashboardForm
-from .models import Inventory
+from .models import Inventory, Login, AdminLogin
 import re
 
 # ---------------- SUPABASE CLIENT ----------------
@@ -227,6 +227,11 @@ def admin_login(request):
 
         # Admin login check (use your admin credentials or logic here)
         if username == "admin" and password == "adminpassword":  # Adjust logic as needed
+            # Set admin session
+            request.session["user"] = {
+                "userid": 0,
+                "role": "Admin"
+            }
             return render(request, "admin_dashboard.html")  # Redirect to admin dashboard
         else:
             return render(request, "admin_login.html", {"error": "Invalid credentials"})
@@ -262,7 +267,7 @@ def inventory_view(request):
 
             messages.success(request, f"{item_name} saved.")
 
-    return render(request, "inventory.html", {"inventory": Inventory.objects.all()})
+    return render(request, "admin_inventory.html", {"inventory": Inventory.objects.all()})
 
 
 # ---------------- VIEW ONLY DASHBOARD ----------------
