@@ -19,7 +19,7 @@
 
     .left-side {
       flex: 1;
-      background-image: url('https://t4.ftcdn.net/jpg/04/80/07/21/360_F_480072179_z17gw2gvY8AJfAnzIlT37YCrX8ehdjpJ.jpg');
+      background-image: url('https://plus.unsplash.com/premium_photo-1681701932128-17445c8ae68b?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
       background-size: cover;
       background-position: center;
       display: flex;
@@ -29,6 +29,15 @@
       text-align: center;
       flex-direction: column;
       position: relative;
+      overflow: hidden;
+    }
+
+    .left-side::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.35);
     }
 
     .left-side p {
@@ -37,6 +46,7 @@
       font-weight: 500;
       margin-bottom: 10px;
       text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      z-index: 1;
     }
 
     .left-side h1 {
@@ -47,6 +57,7 @@
       margin-bottom: 40px;
       letter-spacing: 1px;
       text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      z-index: 1;
     }
 
     .right-side {

@@ -232,7 +232,7 @@ def admin_login(request):
                 "userid": 0,
                 "role": "Admin"
             }
-            return render(request, "admin_dashboard.html")  # Redirect to admin dashboard
+            return redirect("admin_dashboardSelection")  # Redirect to admin dashboard selection menu
         else:
             return render(request, "admin_login.html", {"error": "Invalid credentials"})
 
@@ -268,6 +268,48 @@ def inventory_view(request):
             messages.success(request, f"{item_name} saved.")
 
     return render(request, "admin_inventory.html", {"inventory": Inventory.objects.all()})
+
+
+# ---------------- ADMIN DASHBOARD SELECTION ----------------
+def admin_dashboardSelection(request):
+    session_user = request.session.get("user")
+
+    if not session_user:
+        return redirect("admin_login")
+
+    if session_user["role"] != "Admin":
+        messages.error(request, "Admins only.")
+        return redirect("login")
+
+    return render(request, "admin_dashboardSelection.html")
+
+
+# ---------------- ADMIN DASHBOARD (View Only) ----------------
+def admin_dashboard(request):
+    session_user = request.session.get("user")
+
+    if not session_user:
+        return redirect("admin_login")
+
+    if session_user["role"] != "Admin":
+        messages.error(request, "Admins only.")
+        return redirect("login")
+
+    return render(request, "admin_dashboard.html")
+
+
+# ---------------- ADMIN RESIDENTS ----------------
+def admin_residents(request):
+    session_user = request.session.get("user")
+
+    if not session_user:
+        return redirect("admin_login")
+
+    if session_user["role"] != "Admin":
+        messages.error(request, "Admins only.")
+        return redirect("login")
+
+    return render(request, "admin_residents.html")
 
 
 # ---------------- VIEW ONLY DASHBOARD ----------------
