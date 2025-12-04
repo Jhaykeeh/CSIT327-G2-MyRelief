@@ -7,6 +7,8 @@ class RegistrationForm(forms.Form):
     middlename = forms.CharField(max_length=100, required=False, label="Middle Name")  # Optional middle name
 
     address = forms.CharField(max_length=255, required=True, label="Address")
+    city = forms.CharField(max_length=100, required=True, label="City")
+    barangay = forms.CharField(max_length=100, required=True, label="Barangay")
     contact = forms.CharField(max_length=50, required=True, label="Contact Number")
 
     password = forms.CharField(widget=forms.PasswordInput(), required=True, label="Password")
@@ -24,6 +26,8 @@ class RegistrationForm(forms.Form):
 class DashboardForm(forms.Form):
     # Fields for updating user's address and contact number in the dashboard
     address = forms.CharField(max_length=255, required=True, label="Address")
+    city = forms.CharField(max_length=100, required=True, label="City")
+    barangay = forms.CharField(max_length=100, required=True, label="Barangay")
     contact = forms.CharField(max_length=50, required=True, label="Contact Number")
 
     # Custom validation for the contact field (if needed)
