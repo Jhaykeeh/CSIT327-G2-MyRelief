@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from .forms import RegistrationForm, DashboardForm
-from .models import Inventory, Login, AdminLogin
+from .models import Inventory, Login, AdminLogin, Distribution
 import re
 
 # ---------------- SUPABASE CLIENT ----------------
@@ -356,7 +356,20 @@ def view_only_dashboard(request, user_id):
         messages.error(request, "User not found.")
         return redirect("login")
 
-    return render(request, "view_only_dashboard.html", {"user": user, "user_id": user_id})
+    # Fetch distributions for this user
+    distributions = Distribution.objects.filter(userid=user_id, status='given').order_by('-date_given')
+
+    # Calculate statistics
+    total_reliefs = distributions.count()
+    relief_types = set([d.relief_type for d in distributions])
+    
+    return render(request, "view_only_dashboard.html", {
+        "user": user,
+        "user_id": user_id,
+        "distributions": distributions,
+        "total_reliefs": total_reliefs,
+        "relief_types": ', '.join(relief_types) if relief_types else "None",
+    })
 
 
 # ---------------- ADMIN STATIC PAGES ----------------

@@ -4,277 +4,511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRelief Dashboard - {{ supabase_user.username }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>MyRelief Dashboard - {{ user.username }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <style>
         /* Reset */
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: #ffffff;
-            color:#333;
-            min-height:100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e0f2e0 100%);
+            color: #333;
+            min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Animated Background Circles */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -200px;
-            left: -200px;
-            width: 600px;
-            height: 600px;
-            background: rgba(138,154,91,0.1);
-            border-radius: 50%;
-            animation: floatCircle1 20s linear infinite;
-            z-index: 0;
-        }
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -200px;
-            right: -150px;
-            width: 500px;
-            height: 500px;
-            background: rgba(138,154,91,0.1);
-            border-radius: 50%;
-            animation: floatCircle2 25s linear infinite;
-            z-index: 0;
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, #444C38 0%, #043927 100%);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(4, 57, 39, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        @keyframes floatCircle1 {
-            0% { transform: translate(0,0) }
-            50% { transform: translate(50px,50px) }
-            100% { transform: translate(0,0) }
+        .navbar-brand {
+            font-family: 'Raleway', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: 1px;
         }
-        @keyframes floatCircle2 {
-            0% { transform: translate(0,0) }
-            50% { transform: translate(-50px,30px) }
-            100% { transform: translate(0,0) }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-menu a, .navbar-menu button {
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .navbar-menu a:hover, .navbar-menu button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(4, 57, 39, 0.2);
         }
 
         /* Hero Section */
         .hero {
-            width:100%;
-            min-height:400px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            flex-direction:column;
-            position:relative;
-            z-index:1;
-            padding: 40px 20px;
+            width: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, rgba(68, 76, 56, 0.03), rgba(4, 57, 39, 0.05));
         }
+
         .hero h1 {
             font-family: 'Raleway', sans-serif;
-            font-size:4.5rem;
-            font-weight:800;
-            color:#004526;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-            animation: floatText 3s ease-in-out infinite;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #043927;
+            margin-bottom: 10px;
+            animation: fadeInDown 0.8s ease;
         }
+
         .hero p {
-            font-size:1.6rem;
-            margin-top:12px;
-            color:#006634;
-            font-weight:500;
+            font-size: 1.2rem;
+            color: #6C7C59;
+            font-weight: 500;
+            animation: fadeInUp 0.8s ease 0.2s both;
         }
 
-        @keyframes floatText {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Container */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Main Container */
         .dashboard-container {
-            max-width:1200px;
-            margin:-60px auto 40px auto;
-            padding:0 20px;
-            display:grid;
-            grid-template-columns: 1fr 2fr;
-            gap:30px;
-            position:relative;
-            z-index:2;
+            max-width: 1300px;
+            margin: 0 auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 0.6s ease 0.3s both;
         }
-        @media(max-width:900px){
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media(max-width: 1000px) {
             .dashboard-container {
                 grid-template-columns: 1fr;
-                margin-top:-40px;
+                gap: 25px;
             }
         }
 
-        /* Glassmorphism Cards */
+        /* Cards */
         .card {
-            background: rgba(138,154,91,0.05);
-            backdrop-filter: blur(14px);
-            border-radius:20px;
-            padding:30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(4, 57, 39, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(108, 122, 89, 0.15);
         }
 
-        /* Profile Info */
-        .profile-info {
-            text-align:center;
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(4, 57, 39, 0.15);
         }
-        .profile-info h2 {
+
+        /* Profile Card */
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .profile-header h2 {
             font-family: 'Raleway', sans-serif;
-            font-size:3rem;
-            font-weight:800;
-            color:#004526;
-            margin-bottom:15px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #043927;
+            margin-bottom: 5px;
         }
-        .profile-info p {
-            font-size:1.1rem;
-            margin:8px 0;
-            color:#006634;
+
+        .profile-header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Detail Item */
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(4, 57, 39, 0.03), rgba(108, 122, 89, 0.02));
+            border-radius: 12px;
+            border-left: 4px solid #6C7C59;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+            color: #043927;
+            margin-right: 15px;
+            min-width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: #043927;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #043927, #6C7C59);
+            color: white;
+            box-shadow: 0 8px 20px rgba(4, 57, 39, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(4, 57, 39, 0.4);
+            background: linear-gradient(135deg, #6C7C59, #043927);
+        }
+
+        .btn-secondary {
+            background: rgba(108, 122, 89, 0.1);
+            color: #043927;
+            border: 2px solid #6C7C59;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(108, 122, 89, 0.2);
+            transform: translateY(-3px);
         }
 
         /* Edit Form */
-        .edit-form {
-            display:none;
-            margin-top:20px;
-        }
-        .edit-form input, .edit-form textarea {
-            padding:12px;
-            border-radius:10px;
-            border:none;
-            font-size:1rem;
-            outline:none;
-            width:100%;
-            margin-bottom:10px;
-            background: rgba(138,154,91,0.1);
-            color:#333;
-        }
-        .edit-form input:focus, .edit-form textarea:focus {
-            background: rgba(138,154,91,0.15);
+        .edit-section {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
         }
 
-        /* Default Buttons */
-        .btn {
-            padding:12px 30px;
-            border-radius:50px;
-            border:none;
-            font-weight:700;
-            font-size:1rem;
-            cursor:pointer;
-            color:#fff;
-            background: linear-gradient(135deg,#8A9A5B,#6C7C59);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .edit-section.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            color: #043927;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            color: #333;
             transition: all 0.3s ease;
-            margin-top:15px;
-        }
-        .btn:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg,#6C7C59,#8A9A5B);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
 
-        /* Distribution Log Button */
-        .distribution-btn {
-            display:block;
-            text-align:center;
-            padding:20px 25px;
-            border-radius:30px;
-            background: linear-gradient(135deg,#004526,#006634);
-            color:#fff;
-            font-weight:700;
-            font-size:1.3rem;
-            text-decoration:none;
-            transition: all 0.3s ease;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-        }
-        .distribution-btn:hover {
-            background: linear-gradient(135deg,#006634,#004526);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,70,38,0.4);
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6C7C59;
+            background: rgba(108, 122, 89, 0.02);
+            box-shadow: 0 0 0 3px rgba(108, 122, 89, 0.1);
         }
 
-        /* Top Navigation */
-        .top-nav {
-            position: absolute;
-            top:20px;
-            right:20px;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Right Column - Distribution and Quick Links */
+        .right-column {
             display: flex;
-            gap:15px;
-            z-index:3;
-        }
-        .top-nav a {
-            padding:10px 20px;
-            border-radius:15px;
-            font-weight:600;
-            color:#004526;
-            background: rgba(138,154,91,0.1);
-            transition: all 0.3s ease;
-        }
-        .top-nav a:hover {
-            background: rgba(138,154,91,0.15);
-            transform: translateY(-2px);
+            flex-direction: column;
+            gap: 25px;
         }
 
-        /* Responsive Hero Text */
-        @media(max-width:600px){
-            .hero h1 { font-size:2.8rem; }
-            .hero p { font-size:1.2rem; }
+        .distribution-card {
+            background: linear-gradient(135deg, #043927, #6C7C59);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(4, 57, 39, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .distribution-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(4, 57, 39, 0.4);
+        }
+
+        .distribution-card i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .distribution-card h3 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .distribution-card p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        /* Responsive */
+        @media(max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .dashboard-container { padding: 0 15px; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
+            .navbar { padding: 15px 20px; }
+            .navbar-brand { font-size: 22px; }
         }
     </style>
 </head>
 <body>
 
-<div class="hero">
-<h1>Welcome, {{ user.firstname }} {{ user.lastname }}!</h1>
-<p>MyRelief: Track relief distribution efficiently</p>
-
+<!-- Navigation Bar -->
+<div class="navbar">
+    <div class="navbar-brand">MyRelief</div>
+    <div class="navbar-menu">
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
 </div>
 
-<!-- Only Logout button -->
-<nav class="top-nav">
-    <a href="{% url 'logout' %}">Logout</a>
-</nav>
+<!-- Hero Section -->
+<div class="hero">
+    <h1>Welcome, {{ user.firstname }}!</h1>
+    <p>Your personal relief distribution dashboard</p>
+</div>
 
+<!-- Main Dashboard -->
 <div class="dashboard-container">
-    <!-- Profile Card -->
-    <div class="card">
-        <div class="profile-info">
-            <h2>{{ supabase_user.username }}</h2>
-            <p><strong>Address:</strong> {{ supabase_user.address }}</p>
-            <p><strong>Contact:</strong> {{ supabase_user.contact }}</p>
+    <!-- Left Column: Profile Details -->
+    <div class="card profile-card">
+        <div class="profile-header">
+            <h2>{{ user.firstname }} {{ user.lastname }}</h2>
+            <p>@{{ user.username }}</p>
+        </div>
 
-            <button class="btn" onclick="toggleEdit()">Edit Profile</button>
+        <!-- Profile Details -->
+        <div class="detail-item">
+            <div class="detail-icon"><i class='bx bx-envelope'></i></div>
+            <div class="detail-content">
+                <div class="detail-label">Username</div>
+                <div class="detail-value">{{ user.username }}</div>
+            </div>
+        </div>
 
-            <!-- Edit Form -->
-            <form method="post" enctype="multipart/form-data" class="edit-form" id="edit-form">
+        <div class="detail-item">
+            <div class="detail-icon"><i class='bx bx-map'></i></div>
+            <div class="detail-content">
+                <div class="detail-label">Address</div>
+                <div class="detail-value">{{ user.address }}</div>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-icon"><i class='bx bx-building'></i></div>
+            <div class="detail-content">
+                <div class="detail-label">City</div>
+                <div class="detail-value">{{ user.city }}</div>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-icon"><i class='bx bx-map-pin'></i></div>
+            <div class="detail-content">
+                <div class="detail-label">Barangay</div>
+                <div class="detail-value">{{ user.barangay }}</div>
+            </div>
+        </div>
+
+        <div class="detail-item">
+            <div class="detail-icon"><i class='bx bx-phone'></i></div>
+            <div class="detail-content">
+                <div class="detail-label">Contact Number</div>
+                <div class="detail-value">{{ user.contact }}</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="btn btn-primary" onclick="toggleEdit()">
+                <i class='bx bx-edit'></i> Edit Profile
+            </button>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="edit-section" id="edit-section">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn">Save Changes</button>
+                
+                <div class="form-group">
+                    <label for="id_address">Address</label>
+                    {{ form.address }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_city">City</label>
+                    {{ form.city }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_barangay">Barangay</label>
+                    {{ form.barangay }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_contact">Contact Number</label>
+                    {{ form.contact }}
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-check'></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleEdit()">
+                        <i class='bx bx-x'></i> Cancel
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Distribution Log Card -->
-<div class="card" style="display:flex; align-items:center; justify-content:center;">
-    <a href="{% url 'view_only_dashboard' user_id=user_id %}" class="distribution-btn">
-        <i class='bx bx-history'></i> View Distribution Logs
-    </a>
-</div>
-
+    <!-- Right Column: Distribution Logs -->
+    <div class="right-column">
+        <a href="{% url 'view_only_dashboard' user_id=user_id %}" class="distribution-card">
+            <i class='bx bx-history'></i>
+            <h3>Distribution Logs</h3>
+            <p>View your relief distribution history</p>
+        </a>
+    </div>
 </div>
 
 <script>
-function toggleEdit() {
-    const form = document.getElementById('edit-form');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-}
+    function toggleEdit() {
+        const editSection = document.getElementById('edit-section');
+        editSection.classList.toggle('active');
+    }
 </script>
 
 </body>
