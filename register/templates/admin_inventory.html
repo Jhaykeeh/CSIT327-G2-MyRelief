@@ -6,20 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyRelief - Admin Inventory</title>
     {% load static %}
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
+            font-family: 'Raleway', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
             min-height: 100vh;
         }
 
         /* Navigation Bar */
         .navbar {
-            background: #2c3e50;
+            background: #444C38;
             padding: 15px 40px;
             display: flex;
             justify-content: space-between;
@@ -35,34 +35,32 @@
             font-weight: bold;
             color: white;
             letter-spacing: 1px;
+            margin-right: 40px;
         }
 
         .navbar-menu {
             display: flex;
             gap: 30px;
             align-items: center;
+            margin-left: auto;
         }
 
         .navbar-menu a {
             color: white;
             text-decoration: none;
             font-size: 16px;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            padding: 8px 16px;
+            border-radius: 4px;
         }
 
         .navbar-menu a:hover {
-            color: #27ae60;
+            background: #6C7C59;
         }
 
-        .admin-link {
-            background: #27ae60;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-
-        .admin-link:hover {
-            background: #229954;
+        .navbar-menu a.active {
+            background: #6C7C59;
+            font-weight: 600;
         }
 
         .logout-btn {
@@ -79,6 +77,20 @@
 
         .logout-btn:hover {
             background: #c0392b;
+        }
+
+        .back-btn {
+            background: #6C7C59;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #444C38;
         }
 
         /* Main Container */
@@ -146,7 +158,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             color: #333;
-            border-bottom: 2px solid #27ae60;
+            border-bottom: 2px solid #043927;
             padding-bottom: 10px;
         }
 
@@ -163,14 +175,18 @@
         table th {
             padding: 12px;
             text-align: left;
-            font-weight: 600;
-            color: #333;
-            border-bottom: 2px solid #ddd;
+            font-weight: 700;
+            color: #043927;
+            border-bottom: 3px solid #043927;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            background: #f8f9fa;
         }
 
         table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+            padding: 14px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 15px;
         }
 
         table tbody tr:hover {
@@ -246,17 +262,20 @@
         /* Full Width Section */
         .full-width-card {
             background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
 
         .full-width-card h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #333;
-            border-bottom: 2px solid #27ae60;
-            padding-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #043927;
+            border-bottom: 3px solid #043927;
+            padding-bottom: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
         }
 
         /* Inventory Management Form */
@@ -274,34 +293,48 @@
         }
 
         .form-group label {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #043927;
             font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .form-group input,
         .form-group select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 14px;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Raleway', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #043927;
+            box-shadow: 0 0 0 3px rgba(4, 57, 39, 0.1);
+            background-color: #ffffff;
         }
 
         .btn-add-item {
-            background: #27ae60;
+            background: #043927;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
         }
 
         .btn-add-item:hover {
-            background: #229954;
+            background: #6C7C59;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(4, 57, 39, 0.2);
         }
 
         .inventory-table-wrapper {
@@ -350,92 +383,13 @@
     <div class="navbar">
         <div class="navbar-brand">MyRelief</div>
         <div class="navbar-menu">
-            <a href="{% url 'admin_login' %}">Dashboard</a>
-            <a href="{% url 'inventory' %}" class="admin-link">Inventory</a>
+            <a href="{% url 'admin_dashboardSelection' %}" class="back-btn">← Back to Menu</a>
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="admin-container">
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <div class="filter-group">
-                <label for="city">City:</label>
-                <select id="city" name="city">
-                    <option value="cebu">Cebu City</option>
-                    <option value="mandaue">Mandaue City</option>
-                    <option value="lapu">Lapu-Lapu City</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="barangay">Barangay:</label>
-                <select id="barangay" name="barangay">
-                    <option value="lahug">Lahug</option>
-                    <option value="mabolo">Mabolo</option>
-                    <option value="banilad">Banilad</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Content Grid -->
-        <div class="content-grid">
-            <!-- Beneficiaries Section -->
-            <div class="section-card">
-                <h3>Beneficiaries</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>Purok 3</td>
-                            <td>
-                                <span class="status-given">
-                                    <span class="status-icon">✓</span>
-                                    Given
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Maria Santos</td>
-                            <td>Purok 1</td>
-                            <td>
-                                <span class="status-not-yet">
-                                    <span class="status-icon">✗</span>
-                                    Not Yet
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Inventory Overview Section -->
-            <div class="section-card">
-                <h3>Inventory</h3>
-                <div class="inventory-list">
-                    <div class="inventory-item">
-                        <strong>Rice:</strong>
-                        <span class="inventory-quantity">120 packs</span>
-                    </div>
-                    <div class="inventory-item">
-                        <strong>Canned Goods:</strong>
-                        <span class="inventory-quantity">80</span>
-                    </div>
-                    <div class="inventory-item">
-                        <strong>Water:</strong>
-                        <span class="inventory-quantity">45</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Full Width Inventory Management Section -->
         <div class="full-width-card">
             <h3>Manage Inventory</h3>
@@ -502,8 +456,7 @@
         {% endfor %}
     </div>
     {% endif %}
-</body>
-</html>
-     <script src="{% static 'js/admin_inventory.js' %}"></script>
+
+    <script src="{% static 'js/admin_inventory.js' %}"></script>
 </body>
 </html>
