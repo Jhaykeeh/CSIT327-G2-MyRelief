@@ -8,11 +8,18 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         User = get_user_model()
         
-        # Get admin credentials from environment variables
-        admin_username = os.environ.get('ADMIN_USERNAME', 'admin')
-        admin_firstname = os.environ.get('ADMIN_FIRSTNAME', 'Admin')
-        admin_lastname = os.environ.get('ADMIN_LASTNAME', 'User')
-        admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+        # Get admin credentials from environment variables (no defaults for security)
+        admin_username = os.environ.get('ADMIN_USERNAME')
+        admin_firstname = os.environ.get('ADMIN_FIRSTNAME')
+        admin_lastname = os.environ.get('ADMIN_LASTNAME')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        # Check if all required environment variables are set
+        if not all([admin_username, admin_firstname, admin_lastname, admin_password]):
+            self.stdout.write(
+                self.style.ERROR('Missing required environment variables: ADMIN_USERNAME, ADMIN_FIRSTNAME, ADMIN_LASTNAME, ADMIN_PASSWORD')
+            )
+            return
         
         # Check if superuser already exists
         if not User.objects.filter(username=admin_username).exists():
