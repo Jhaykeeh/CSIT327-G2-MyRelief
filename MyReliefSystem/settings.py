@@ -12,24 +12,17 @@ if os.environ.get("RENDER", "") != "true":
     load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key-replace-in-production")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-dev-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Default to True for local development, False for production
-DEBUG = os.environ.get("DJANGO_DEBUG", "True").lower() == "true"
+# Default to False for production
+DEBUG = os.environ.get("DJANGO_DEBUG", "False").lower() == "true"
 
-# ALLOWED_HOSTS - include localhost for development and production domains
-allowed_hosts_str = os.environ.get("DJANGO_ALLOWED_HOSTS", "")
-if allowed_hosts_str:
-    ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_str.split(",") if h.strip()]
-else:
-    # Default to localhost for local development
-    ALLOWED_HOSTS = [
-        'localhost',  # Allows requests from localhost
-        '127.0.0.1',  # Allows requests from 127.0.0.1
-        '0.0.0.0',
-        'csit327-g2-myrelief.onrender.com',  # Your production domain
-    ]
+# ALLOWED_HOSTS - include production domains
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h.strip()]
+
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,7 +40,7 @@ AUTH_USER_MODEL = 'register.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- enable for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- enable WhiteNoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,12 +48,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-# Disable HTTPS redirect for local development
-if DEBUG:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
 
 ROOT_URLCONF = 'MyReliefSystem.urls'
 
@@ -85,22 +72,13 @@ WSGI_APPLICATION = 'MyReliefSystem.wsgi.application'
 
 # Database
 DATABASE_URL = os.environ.get("DATABASE_URL")
-if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
-else:
-    # Fallback to SQLite for local development
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -140,11 +118,8 @@ SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE")
 
-# CSRF Trusted Origins
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o.strip()]
-
 # Security (production only - when DEBUG is False)
-if not DEBUG and os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "True").lower() == "true":
+if os.environ.get("DJANGO_SECURE_SSL_REDIRECT", "True").lower() == "true":
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
