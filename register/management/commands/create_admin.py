@@ -3,27 +3,20 @@ from django.contrib.auth import get_user_model
 import os
 
 class Command(BaseCommand):
-    help = 'Create a superuser with credentials from environment variables'
+    help = 'Create a superuser with credentials from environment variables or defaults'
 
     def handle(self, *args, **options):
         User = get_user_model()
         
-        # Get admin credentials from environment variables (no defaults for security)
-        admin_username = os.environ.get('ADMIN_USERNAME')
-        admin_firstname = os.environ.get('ADMIN_FIRSTNAME')
-        admin_lastname = os.environ.get('ADMIN_LASTNAME')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
+        # Get admin credentials from environment variables or use defaults
+        admin_username = os.environ.get('ADMIN_USERNAME', 'JuddAdmin')
+        admin_firstname = os.environ.get('ADMIN_FIRSTNAME', 'Judd')
+        admin_lastname = os.environ.get('ADMIN_LASTNAME', 'Admin')
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'march242005')
         admin_address = os.environ.get('ADMIN_ADDRESS', 'Admin Office')
         admin_contact = os.environ.get('ADMIN_CONTACT', '00000000000')
         admin_city = os.environ.get('ADMIN_CITY', 'Unknown')
         admin_barangay = os.environ.get('ADMIN_BARANGAY', 'Unknown')
-        
-        # Check if required environment variables are set
-        if not all([admin_username, admin_firstname, admin_lastname, admin_password]):
-            self.stdout.write(
-                self.style.ERROR('Missing required environment variables: ADMIN_USERNAME, ADMIN_FIRSTNAME, ADMIN_LASTNAME, ADMIN_PASSWORD')
-            )
-            return
         
         # Check if superuser already exists
         if not User.objects.filter(username=admin_username).exists():
