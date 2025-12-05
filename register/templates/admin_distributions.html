@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Relief Distributions - MyRelief Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
+    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .table-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8f9fa; }
+    th { padding: 15px; text-align: left; font-weight: 600; color: #555; font-size: 0.85rem; text-transform: uppercase; }
+    td { padding: 15px; border-bottom: 1px solid #f0f0f0; }
+    tbody tr:hover { background: #f8f9fa; }
+    .badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="bx bxs-package"></i> Relief Distributions</h1>
+      <a href="{% url 'admin_dashboard' %}" class="btn-back"><i class="bx bx-arrow-back"></i> Back</a>
+    </div>
+    <div class="table-card">
+      <h2 style="margin-bottom: 20px; color: #2d4a3e;">All Distributions ({{ distributions.count }})</h2>
+      {% if distributions %}
+      <table>
+        <thead>
+          <tr><th>ID</th><th>User</th><th>Item</th><th>Category</th><th>Quantity</th><th>Date</th><th>Distributed By</th></tr>
+        </thead>
+        <tbody>
+          {% for dist in distributions %}
+          <tr>
+            <td><strong>#{{ dist.id }}</strong></td>
+            <td>{{ dist.user.firstname }} {{ dist.user.lastname }}</td>
+            <td>{{ dist.item.name }}</td>
+            <td><span class="badge" style="background: #8A9A5B; color: white;">{{ dist.item.category }}</span></td>
+            <td>{{ dist.quantity_distributed }}</td>
+            <td>{{ dist.distribution_date|date:"M d, Y H:i" }}</td>
+            <td>{% if dist.distributed_by %}{{ dist.distributed_by.username }}{% else %}System{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="text-align: center; padding: 50px; color: #999;">No distributions yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

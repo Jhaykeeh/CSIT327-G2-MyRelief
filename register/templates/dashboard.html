@@ -321,55 +321,165 @@
             min-height: 100px;
         }
 
-        /* Right Column - Distribution and Quick Links */
+        /* Right Column - Distribution Info */
         .right-column {
             display: flex;
             flex-direction: column;
             gap: 25px;
         }
 
-        .distribution-card {
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
             background: linear-gradient(135deg, #043927, #6C7C59);
             color: white;
-            padding: 40px 30px;
-            border-radius: 20px;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
-            box-shadow: 0 15px 40px rgba(4, 57, 39, 0.3);
+            box-shadow: 0 10px 30px rgba(4, 57, 39, 0.2);
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 200px;
         }
 
-        .distribution-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 60px rgba(4, 57, 39, 0.4);
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(4, 57, 39, 0.3);
         }
 
-        .distribution-card i {
-            font-size: 3.5rem;
+        .stat-card i {
+            font-size: 2.5rem;
             margin-bottom: 15px;
-            animation: bounce 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .distribution-card h3 {
+        .stat-card h3 {
             font-family: 'Raleway', sans-serif;
             font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .distribution-card p {
+        .stat-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Distribution Logs */
+        .logs-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(4, 57, 39, 0.08);
+            border: 1px solid rgba(108, 122, 89, 0.15);
+        }
+
+        .logs-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: #043927;
+        }
+
+        .logs-header h3 {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-item:hover {
+            background: rgba(108, 122, 89, 0.05);
+            border-radius: 10px;
+        }
+        
+        .log-item-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .log-item-link:hover .log-item {
+            background: rgba(108, 122, 89, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .log-arrow {
+            color: #8A9A5B;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .log-item-link:hover .log-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        .log-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .log-category {
+            font-weight: 700;
+            color: #043927;
             font-size: 0.95rem;
-            opacity: 0.95;
+        }
+
+        .log-item-name {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .log-date {
+            color: #999;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        
+        .log-quantity {
+            margin: 0 15px;
+        }
+        
+        .quantity-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8A9A5B, #6B7A4B);
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .no-logs {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .no-logs i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ccc;
         }
 
         /* Responsive */
@@ -381,6 +491,7 @@
             .btn { width: 100%; }
             .navbar { padding: 15px 20px; }
             .navbar-brand { font-size: 22px; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -494,13 +605,57 @@
         </div>
     </div>
 
-    <!-- Right Column: Distribution Logs -->
+    <!-- Right Column: Statistics and Distribution Logs -->
     <div class="right-column">
-        <a href="{% url 'view_only_dashboard' user_id=user_id %}" class="distribution-card">
-            <i class='bx bx-history'></i>
-            <h3>Distribution Logs</h3>
-            <p>View your relief distribution history</p>
-        </a>
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class='bx bx-package'></i>
+                <h3>{{ total_reliefs_received|default:"0" }}</h3>
+                <p>Total Reliefs Received</p>
+            </div>
+            
+            <div class="stat-card">
+                <i class='bx bx-tag'></i>
+                <h3>{{ relief_types_count|default:"0" }}</h3>
+                <p>Relief Types</p>
+            </div>
+        </div>
+
+        <!-- Distribution Logs -->
+        <div class="logs-section">
+            <div class="logs-header">
+                <i class='bx bx-history'></i>
+                <h3>Distribution Logs</h3>
+            </div>
+            
+            {% if user_distributions %}
+                {% for distribution in user_distributions %}
+                    <a href="{% url 'view_only_dashboard' user_id=user.userid %}" class="log-item-link">
+                        <div class="log-item">
+                            <div class="log-details">
+                                <div class="log-category">{{ distribution.item.category }}</div>
+                                <div class="log-item-name">{{ distribution.item.name }}</div>
+                            </div>
+                            <div class="log-quantity">
+                                <span class="quantity-badge">{{ distribution.quantity_distributed }}</span>
+                            </div>
+                            <div class="log-date">
+                                {{ distribution.distribution_date|date:"M d, Y" }}
+                            </div>
+                            <div class="log-arrow">
+                                <i class='bx bx-chevron-right'></i>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="no-logs">
+                    <i class='bx bx-inbox'></i>
+                    <p>No distribution records found</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 
