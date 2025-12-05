@@ -35,11 +35,13 @@ def register_view(request):
         if form.is_valid():
             firstname = form.cleaned_data["firstname"]
             lastname = form.cleaned_data["lastname"]
-            middlename = form.cleaned_data["middlename"]
+            middlename = form.cleaned_data.get("middlename", "")
+            username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
             address = form.cleaned_data["address"]
+            city = form.cleaned_data["city"]
+            barangay = form.cleaned_data["barangay"]
             contact = form.cleaned_data["contact"]
-            username = form.cleaned_data["username"]
 
             # Check if contact already exists
             if User.objects.filter(contact=contact).exists():
@@ -61,14 +63,15 @@ def register_view(request):
             for field, value in {"firstname": firstname, "lastname": lastname, "middlename": middlename}.items():
                 if not validate_name(value):
                     invalid_names.append(
-                        f"The {field} contains invalid characters. Only letters and spaces are allowed.")
+                        f"The {field} contains invalid characters. Only letters and spaces are allowed."
+                    )
 
             if invalid_names:
                 for message in invalid_names:
                     messages.warning(request, message)
                 return render(request, "register.html", {"form": form})
 
-            # Create user using the custom manager
+            # Create user
             user = User.objects.create_user(
                 username=username,
                 firstname=firstname,
@@ -76,16 +79,20 @@ def register_view(request):
                 middlename=middlename,
                 password=password,
                 address=address,
+                city=city,
+                barangay=barangay,
                 contact=contact,
                 role="FamilyHead"
             )
 
+            messages.success(request, "Registration successful!")
             return redirect("register_success", user_id=user.userid)
 
     else:
         form = RegistrationForm()
 
     return render(request, "register.html", {"form": form})
+
 
 
 # ---------------- REGISTER SUCCESS ----------------
@@ -128,33 +135,26 @@ def login_view(request):
 
 # ---------------- DASHBOARD ----------------
 def dashboard_view(request, user_id):
-    # Retrieve the user from session
     session_user = request.session.get("user")
-
-    # If the user is not authenticated or the user_id doesn't match session user_id, redirect to login
     if not session_user or str(session_user["userid"]) != str(user_id):
         messages.error(request, "Unauthorized access.")
         return redirect("login")
 
-    # Get user details by user_id
     try:
         user = User.objects.get(userid=user_id)
     except User.DoesNotExist:
         messages.error(request, "User not found.")
         return redirect("login")
 
-    # Get user's distributions
+    # User distributions
     user_distributions = ReliefDistribution.objects.filter(user=user).select_related('item')
-    
-    # Calculate statistics
     total_reliefs_received = user_distributions.count()
     relief_types_count = user_distributions.values_list('item__category', flat=True).distinct().count()
 
-    # Process form submission
     if request.method == "POST":
         form = DashboardForm(request.POST)
         if form.is_valid():
-            # Update user details
+            # Update user info
             user.address = form.cleaned_data["address"]
             user.city = form.cleaned_data["city"]
             user.barangay = form.cleaned_data["barangay"]
@@ -163,7 +163,6 @@ def dashboard_view(request, user_id):
             messages.success(request, "Profile updated.")
             return redirect("dashboard", user_id=user_id)
     else:
-        # If it's GET request, display the form with initial values
         form = DashboardForm(initial={
             "address": user.address,
             "city": user.city,
@@ -171,15 +170,15 @@ def dashboard_view(request, user_id):
             "contact": user.contact,
         })
 
-    # Pass user data and form to the template
     return render(request, "dashboard.html", {
-        "user": user, 
-        "form": form, 
+        "user": user,
+        "form": form,
         "user_id": user_id,
         "user_distributions": user_distributions,
         "total_reliefs_received": total_reliefs_received,
         "relief_types_count": relief_types_count
     })
+
 
 
 # ---------------- LOGOUT ----------------
