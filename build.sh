@@ -9,8 +9,10 @@ echo "==> Running database migrations"
 python manage.py makemigrations
 python manage.py migrate --noinput
 
+echo "==> Creating superuser if it doesn't exist"
+python manage.py create_admin
+
 echo "==> Collecting static files"
 python manage.py collectstatic --noinput
 
 echo "==> Build complete"
-
