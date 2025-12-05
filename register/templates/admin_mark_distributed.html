@@ -1,0 +1,188 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distribute Relief - MyRelief Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container { max-width: 700px; width: 100%; }
+    
+    .form-card {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d4a3e;
+      margin-bottom: 10px;
+    }
+    
+    .user-info {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    
+    .user-info h3 {
+      color: #3A5A40;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    
+    .user-info p {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+    
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: 'Montserrat', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .form-group select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #3A5A40;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #218838;
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-card">
+      <div class="header">
+        <h1><i class="bx bxs-package"></i> Distribute Relief</h1>
+      </div>
+
+      <div class="user-info">
+        <h3>Recipient Information</h3>
+        <p><strong>Name:</strong> {{ user.firstname }} {{ user.middlename|default:'' }} {{ user.lastname }}</p>
+        <p><strong>Address:</strong> {{ user.address }}</p>
+        <p><strong>Contact:</strong> {{ user.contact }}</p>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label for="item_id">Select Relief Item</label>
+          <select id="item_id" name="item_id" required>
+            <option value="">-- Choose an item --</option>
+            {% for item in inventory_items %}
+            <option value="{{ item.id }}">{{ item.name }} ({{ item.category }}) - {{ item.quantity }} available</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity to Distribute</label>
+          <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">Notes (Optional)</label>
+          <textarea id="notes" name="notes" rows="3" placeholder="Add any notes about this distribution..."></textarea>
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-success">
+            <i class="bx bx-check"></i> Confirm Distribution
+          </button>
+          <a href="{% url 'manage_users' %}" class="btn btn-secondary">
+            <i class="bx bx-x"></i> Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

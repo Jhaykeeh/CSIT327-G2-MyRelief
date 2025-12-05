@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'register',
 ]
 
+# Custom user model
+AUTH_USER_MODEL = 'register.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- enable for static files

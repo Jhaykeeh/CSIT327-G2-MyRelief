@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reports - MyRelief Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
+    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .report-section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 25px; }
+    .report-section h2 { color: #2d4a3e; margin-bottom: 15px; font-size: 1.3rem; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8f9fa; }
+    th { padding: 12px; text-align: left; font-weight: 600; color: #555; font-size: 0.85rem; }
+    td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
+    .badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="bx bxs-file"></i> Reports</h1>
+      <a href="{% url 'admin_dashboard' %}" class="btn-back"><i class="bx bx-arrow-back"></i> Back</a>
+    </div>
+    
+    <div class="report-section">
+      <h2>New User Registrations</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Username</th><th>Full Name</th><th>Contact</th></tr></thead>
+        <tbody>
+          {% for user in new_users %}
+          <tr>
+            <td>#{{ user.userid }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.firstname }} {{ user.lastname }}</td>
+            <td>{{ user.contact }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" style="text-align: center; padding: 30px; color: #999;">No new users</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <h2>Low Stock Items</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Category</th><th>Quantity</th></tr></thead>
+        <tbody>
+          {% for item in low_stock_items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td><span class="badge" style="background: #8A9A5B; color: white;">{{ item.category }}</span></td>
+            <td><strong style="color: #dc3545;">{{ item.quantity }}</strong></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" style="text-align: center; padding: 30px; color: #999;">All items well stocked</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

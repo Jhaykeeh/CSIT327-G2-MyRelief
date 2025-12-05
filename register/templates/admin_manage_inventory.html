@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Inventory - MyRelief Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
+    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .add-item-card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .add-item-card h2 { margin-bottom: 20px; color: #2d4a3e; }
+    .form-inline { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { margin-bottom: 8px; font-weight: 600; color: #333; font-size: 0.9rem; }
+    .form-group input, .form-group select { padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; }
+    .btn-add { padding: 12px 25px; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .inventory-item { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #3A5A40; }
+    .item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+    .item-name { font-size: 1.1rem; font-weight: 700; color: #2d4a3e; }
+    .item-category { padding: 4px 12px; background: #8A9A5B; color: white; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .item-quantity { font-size: 2rem; font-weight: 800; color: #3A5A40; margin: 10px 0; }
+    .item-actions { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-sm { padding: 6px 12px; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-edit { background: #17a2b8; }
+    .btn-delete { background: #dc3545; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="bx bxs-box"></i> Manage Inventory</h1>
+      <a href="{% url 'admin_dashboard' %}" class="btn-back"><i class="bx bx-arrow-back"></i> Back to Dashboard</a>
+    </div>
+
+    <div class="add-item-card">
+      <h2>Add New Item</h2>
+      <form method="POST" class="form-inline">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>Item Name</label>
+          <input type="text" name="item_name" required placeholder="e.g., Rice, Shirts, Medicine">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select name="category" required>
+            <option value="">Select...</option>
+            {% for code, name in categories %}
+            <option value="{{ code }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" name="quantity" required min="1" value="1">
+        </div>
+        <button type="submit" class="btn-add"><i class="bx bx-plus"></i> Add Item</button>
+      </form>
+    </div>
+
+    <h2 style="margin-bottom: 20px; color: #2d4a3e;">All Inventory Items ({{ inventory_items.count }})</h2>
+    <div class="inventory-grid">
+      {% for item in inventory_items %}
+      <div class="inventory-item">
+        <div class="item-header">
+          <div class="item-name">{{ item.name }}</div>
+          <span class="item-category">{{ item.category }}</span>
+        </div>
+        <div class="item-quantity">{{ item.quantity }}</div>
+        <p style="color: #888; font-size: 0.85rem;">items in stock</p>
+        <div class="item-actions">
+          <a href="{% url 'update_inventory' item.id %}" class="btn-sm btn-edit"><i class="bx bx-edit"></i> Edit</a>
+          <a href="{% url 'delete_inventory' item.id %}" class="btn-sm btn-delete" onclick="return confirm('Delete this item?')"><i class="bx bx-trash"></i> Delete</a>
+        </div>
+      </div>
+      {% empty %}
+      <p style="grid-column: 1/-1; text-align: center; padding: 50px; color: #999;">No inventory items yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
