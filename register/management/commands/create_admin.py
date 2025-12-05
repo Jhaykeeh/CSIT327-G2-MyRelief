@@ -13,8 +13,12 @@ class Command(BaseCommand):
         admin_firstname = os.environ.get('ADMIN_FIRSTNAME')
         admin_lastname = os.environ.get('ADMIN_LASTNAME')
         admin_password = os.environ.get('ADMIN_PASSWORD')
+        admin_address = os.environ.get('ADMIN_ADDRESS', 'Admin Office')
+        admin_contact = os.environ.get('ADMIN_CONTACT', '00000000000')
+        admin_city = os.environ.get('ADMIN_CITY', 'Unknown')
+        admin_barangay = os.environ.get('ADMIN_BARANGAY', 'Unknown')
         
-        # Check if all required environment variables are set
+        # Check if required environment variables are set
         if not all([admin_username, admin_firstname, admin_lastname, admin_password]):
             self.stdout.write(
                 self.style.ERROR('Missing required environment variables: ADMIN_USERNAME, ADMIN_FIRSTNAME, ADMIN_LASTNAME, ADMIN_PASSWORD')
@@ -27,7 +31,11 @@ class Command(BaseCommand):
                 username=admin_username,
                 firstname=admin_firstname,
                 lastname=admin_lastname,
-                password=admin_password
+                password=admin_password,
+                address=admin_address,
+                contact=admin_contact,
+                city=admin_city,
+                barangay=admin_barangay
             )
             self.stdout.write(
                 self.style.SUCCESS(f'Successfully created superuser "{admin_username}"')
