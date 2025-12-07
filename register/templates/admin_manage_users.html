@@ -70,10 +70,12 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
     
     .search-form input {
       flex: 1;
+      min-width: 250px;
       padding: 12px 15px;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
@@ -83,6 +85,22 @@
     }
     
     .search-form input:focus {
+      border-color: #3A5A40;
+    }
+    
+    .search-form select {
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.3s ease;
+      background: white;
+      cursor: pointer;
+      min-width: 150px;
+    }
+    
+    .search-form select:focus {
       border-color: #3A5A40;
     }
     
@@ -99,6 +117,22 @@
     
     .btn-search:hover {
       background: #2C4A32;
+    }
+    
+    .btn-clear {
+      padding: 12px 25px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .btn-clear:hover {
+      background: #5a6268;
     }
     
     .users-table {
@@ -228,9 +262,28 @@
     <div class="search-container">
       <form method="GET" class="search-form">
         <input type="text" name="search" placeholder="Search by username, name, contact, or address..." value="{{ search_query|default:'' }}">
+        
+        <select name="city">
+          <option value="">All Cities</option>
+          {% for city in cities %}
+            <option value="{{ city }}" {% if city_filter == city %}selected{% endif %}>{{ city }}</option>
+          {% endfor %}
+        </select>
+        
+        <select name="barangay">
+          <option value="">All Barangays</option>
+          {% for barangay in barangays %}
+            <option value="{{ barangay }}" {% if barangay_filter == barangay %}selected{% endif %}>{{ barangay }}</option>
+          {% endfor %}
+        </select>
+        
         <button type="submit" class="btn-search">
-          <i class="bx bx-search"></i> Search
+          <i class="bx bx-search"></i> Filter
         </button>
+        
+        <a href="{% url 'manage_users' %}" class="btn-clear">
+          <i class="bx bx-reset"></i> Clear
+        </a>
       </form>
     </div>
 
@@ -245,6 +298,8 @@
             <th>Username</th>
             <th>Full Name</th>
             <th>Address</th>
+            <th>City</th>
+            <th>Barangay</th>
             <th>Contact</th>
             <th>Role</th>
             <th>Actions</th>
@@ -257,6 +312,8 @@
             <td>{{ user.username }}</td>
             <td>{{ user.firstname }} {% if user.middlename %}{{ user.middlename }} {% endif %}{{ user.lastname }}</td>
             <td>{{ user.address }}</td>
+            <td>{{ user.city|default:"-" }}</td>
+            <td>{{ user.barangay|default:"-" }}</td>
             <td>{{ user.contact }}</td>
             <td>
               {% if user.role == 'Admin' %}
