@@ -45,6 +45,11 @@ INSTALLED_APPS = [
 # Custom user model
 AUTH_USER_MODEL = 'register.User'
 
+# Custom login URL (redirect from @login_required)
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/admin-panel/dashboard/'
+LOGOUT_REDIRECT_URL = '/login/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- enable for static files
