@@ -162,10 +162,21 @@
       letter-spacing: 0.5px;
     }
     
+    th:last-child {
+      width: 400px;
+      min-width: 400px;
+    }
+    
     td {
       padding: 15px;
       border-bottom: 1px solid #f0f0f0;
       color: #333;
+      vertical-align: middle;
+    }
+    
+    td:last-child {
+      width: 400px;
+      min-width: 400px;
     }
     
     tbody tr:hover {
@@ -193,6 +204,9 @@
     .action-buttons {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      min-height: 40px;
     }
     
     .btn-action {
@@ -207,6 +221,8 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     
     .btn-edit {
