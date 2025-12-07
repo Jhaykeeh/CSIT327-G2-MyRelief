@@ -26,6 +26,16 @@ urlpatterns = [
     
     # Pending Requests
     path('admin-panel/pending/', views.pending_requests_view, name='pending_requests'),
+    path('admin-panel/requests/approve/<int:request_id>/', views.approve_request_view, name='approve_request'),
+    path('admin-panel/requests/deny/<int:request_id>/', views.deny_request_view, name='deny_request'),
+    
+    # Approved Requests
+    path('admin-panel/approved/', views.approved_requests_view, name='approved_requests'),
+    path('admin-panel/requests/mark-given/<int:request_id>/', views.mark_relief_given_view, name='mark_relief_given'),
+    path('admin-panel/requests/mark-not-given/<int:request_id>/', views.mark_relief_not_given_view, name='mark_relief_not_given'),
+    
+    # Relief Request (User side)
+    path('relief-request/<int:user_id>/', views.create_relief_request, name='create_relief_request'),
     
     # Analytics
     path('admin-panel/analytics/', views.analytics_view, name='analytics'),

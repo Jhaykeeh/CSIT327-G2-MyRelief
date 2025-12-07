@@ -252,6 +252,18 @@
             box-shadow: 0 12px 30px rgba(4, 57, 39, 0.4);
             background: linear-gradient(135deg, #6C7C59, #043927);
         }
+        
+        .btn-relief {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-relief:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #20c997, #28a745);
+        }
 
         .btn-secondary {
             background: rgba(108, 122, 89, 0.1);
@@ -265,14 +277,14 @@
         }
 
         /* Edit Form */
-        .edit-section {
+        .edit-section, .relief-request-section {
             display: none;
             margin-top: 30px;
             padding-top: 30px;
             border-top: 2px solid #f0f0f0;
         }
 
-        .edit-section.active {
+        .edit-section.active, .relief-request-section.active {
             display: block;
             animation: slideDown 0.3s ease;
         }
@@ -566,7 +578,39 @@
             <button class="btn btn-primary" onclick="toggleEdit()">
                 <i class='bx bx-edit'></i> Edit Profile
             </button>
+            
+            {% if not pending_request %}
+            <button class="btn btn-relief" onclick="toggleReliefRequest()">
+                <i class='bx bx-package'></i> Request Relief
+            </button>
+            {% else %}
+            <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 8px; margin-top: 10px; text-align: center;">
+                <i class='bx bx-time' style="color: #ff9800;"></i>
+                <strong style="color: #856404;">Pending Request</strong>
+            </div>
+            {% endif %}
         </div>
+        
+        <!-- Relief Request Status -->
+        {% if latest_request %}
+        <div style="margin-top: 20px; padding: 15px; background: {% if latest_request.status == 'approved' %}#d4edda{% elif latest_request.status == 'denied' %}#f8d7da{% else %}#fff3cd{% endif %}; border-radius: 10px;">
+            <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: #333;">Latest Request</h4>
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">
+                <strong>Type:</strong> {{ latest_request.relief_type }}<br>
+                <strong>Status:</strong> 
+                {% if latest_request.status == 'approved' %}
+                    <span style="color: #155724;">✓ Approved</span>
+                {% elif latest_request.status == 'denied' %}
+                    <span style="color: #721c24;">✗ Denied</span>
+                {% else %}
+                    <span style="color: #856404;">⏳ Pending</span>
+                {% endif %}
+            </p>
+            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #666;">
+                Submitted: {{ latest_request.request_date|date:"M d, Y" }}
+            </p>
+        </div>
+        {% endif %}
 
         <!-- Edit Form -->
         <div class="edit-section" id="edit-section">
@@ -598,6 +642,41 @@
                         <i class='bx bx-check'></i> Save Changes
                     </button>
                     <button type="button" class="btn btn-secondary" onclick="toggleEdit()">
+                        <i class='bx bx-x'></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Relief Request Form -->
+        <div class="relief-request-section" id="relief-request-section">
+            <h3 style="margin-bottom: 15px; color: #043927; font-size: 1.2rem;">Request Relief Assistance</h3>
+            <form method="post" action="{% url 'create_relief_request' user.userid %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="relief_type">Relief Type</label>
+                    <select id="relief_type" name="relief_type" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
+                        <option value="">Select relief type...</option>
+                        <option value="Food">Food</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Medicine">Medicine</option>
+                        <option value="Hygiene">Hygiene</option>
+                        <option value="Shelter">Shelter</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Notes/Reason</label>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Please describe why you need this relief..." required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: vertical;"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-send'></i> Submit Request
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleReliefRequest()">
                         <i class='bx bx-x'></i> Cancel
                     </button>
                 </div>
@@ -662,7 +741,16 @@
 <script>
     function toggleEdit() {
         const editSection = document.getElementById('edit-section');
+        const reliefSection = document.getElementById('relief-request-section');
+        reliefSection.classList.remove('active');
         editSection.classList.toggle('active');
+    }
+    
+    function toggleReliefRequest() {
+        const reliefSection = document.getElementById('relief-request-section');
+        const editSection = document.getElementById('edit-section');
+        editSection.classList.remove('active');
+        reliefSection.classList.toggle('active');
     }
 </script>
 

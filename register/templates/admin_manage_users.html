@@ -236,6 +236,148 @@
       background: #c82333;
     }
     
+    .btn-history {
+      background: #ffc107;
+      color: #333;
+    }
+    
+    .btn-history:hover {
+      background: #e0a800;
+    }
+    
+    .distribution-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .status-distributed {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-not-distributed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background: white;
+      margin: 50px auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+      animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .modal-header {
+      background: #3A5A40;
+      color: white;
+      padding: 20px 25px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      margin: 0;
+      font-family: 'Raleway', sans-serif;
+      font-size: 1.5rem;
+    }
+    
+    .close-modal {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-modal:hover {
+      opacity: 0.8;
+    }
+    
+    .modal-body {
+      padding: 25px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .history-item {
+      padding: 15px;
+      border-left: 4px solid #3A5A40;
+      background: #f8f9fa;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+    
+    .history-item h4 {
+      margin: 0 0 10px 0;
+      color: #2d4a3e;
+      font-size: 1rem;
+    }
+    
+    .history-item p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .history-item strong {
+      color: #333;
+    }
+    
+    .no-history {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+    }
+    
+    .no-history i {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+    
     .no-data {
       text-align: center;
       padding: 50px;
@@ -302,6 +444,7 @@
             <th>Barangay</th>
             <th>Contact</th>
             <th>Role</th>
+            <th>Distribution Status</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -323,7 +466,25 @@
               {% endif %}
             </td>
             <td>
+              {% if user.has_distributions %}
+                <span class="distribution-status status-distributed">
+                  <i class="bx bx-check-circle"></i>
+                  Distributed ({{ user.distribution_count }})
+                </span>
+              {% else %}
+                <span class="distribution-status status-not-distributed">
+                  <i class="bx bx-x-circle"></i>
+                  Not Yet Distributed
+                </span>
+              {% endif %}
+            </td>
+            <td>
               <div class="action-buttons">
+                {% if user.has_distributions %}
+                  <button type="button" onclick="showHistory({{ user.userid }}); return false;" class="btn-action btn-history">
+                    <i class="bx bx-history"></i> History
+                  </button>
+                {% endif %}
                 <a href="{% url 'update_user' user.userid %}" class="btn-action btn-edit">
                   <i class="bx bx-edit"></i> Edit
                 </a>
@@ -347,5 +508,94 @@
       {% endif %}
     </div>
   </div>
+
+  <!-- Distribution History Modal -->
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2><i class="bx bx-history"></i> Distribution History</h2>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="historyContent">
+        <!-- History will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Distribution history data
+    const distributionData = {
+      {% for user in users %}
+        {{ user.userid }}: [
+          {% for dist in user.all_distributions %}
+            {
+              item: "{{ dist.item.name|escapejs }}",
+              category: "{{ dist.item.category }}",
+              quantity: {{ dist.quantity_distributed }},
+              date: "{{ dist.distribution_date|date:'M d, Y H:i' }}",
+              distributedBy: "{{ dist.distributed_by.username|default:'N/A' }}",
+              notes: "{{ dist.notes|default:''|escapejs }}"
+            }{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    };
+
+    console.log('Distribution Data:', distributionData);
+
+    function showHistory(userId) {
+      console.log('Opening history for user:', userId);
+      const modal = document.getElementById('historyModal');
+      const content = document.getElementById('historyContent');
+      const history = distributionData[userId];
+
+      console.log('History for user ' + userId + ':', history);
+
+      if (history && history.length > 0) {
+        let html = '';
+        history.forEach(item => {
+          html += `
+            <div class="history-item">
+              <h4><i class="bx bx-package"></i> ${item.item} (${item.category})</h4>
+              <p><strong>Quantity:</strong> ${item.quantity}</p>
+              <p><strong>Date:</strong> ${item.date}</p>
+              <p><strong>Distributed By:</strong> ${item.distributedBy}</p>
+              ${item.notes ? `<p><strong>Notes:</strong> ${item.notes}</p>` : ''}
+            </div>
+          `;
+        });
+        content.innerHTML = html;
+      } else {
+        content.innerHTML = `
+          <div class="no-history">
+            <i class="bx bx-info-circle"></i>
+            <p>No distribution history found.</p>
+          </div>
+        `;
+      }
+
+      console.log('Showing modal...');
+      modal.style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('historyModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('historyModal');
+      if (event.target == modal) {
+        closeModal();
+      }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Inventory, ReliefDistribution, Notification
+from .models import User, Inventory, ReliefDistribution, Notification, ReliefRequest
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -21,6 +21,13 @@ class ReliefDistributionAdmin(admin.ModelAdmin):
     list_filter = ('distribution_date', 'item')
     search_fields = ('user__username', 'item__name')
     ordering = ('-distribution_date',)
+
+@admin.register(ReliefRequest)
+class ReliefRequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'relief_type', 'status', 'request_date', 'reviewed_by')
+    list_filter = ('status', 'relief_type', 'request_date')
+    search_fields = ('user__username', 'notes')
+    ordering = ('-request_date',)
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
