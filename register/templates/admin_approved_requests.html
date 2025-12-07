@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Approved Requests - MyRelief Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
+    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+    .table-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8f9fa; }
+    th { padding: 15px; text-align: left; font-weight: 600; color: #555; font-size: 0.85rem; text-transform: uppercase; }
+    td { padding: 15px; border-bottom: 1px solid #f0f0f0; }
+    tbody tr:hover { background: #f8f9fa; }
+    .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+    .status-given { background: #d4edda; color: #155724; }
+    .status-not-given { background: #f8d7da; color: #721c24; }
+    .btn-mark-given { padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer; font-size: 0.85rem; }
+    .btn-mark-given:hover { background: #218838; }
+    .btn-mark-not-given { padding: 8px 16px; background: #ffc107; color: #333; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer; font-size: 0.85rem; margin-left: 5px; }
+    .btn-mark-not-given:hover { background: #e0a800; }
+    .action-buttons { display: flex; gap: 8px; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="bx bx-check-circle"></i> Approved Relief Requests</h1>
+      <a href="{% url 'admin_dashboard' %}" class="btn-back"><i class="bx bx-arrow-back"></i> Back</a>
+    </div>
+    <div class="table-card">
+      <h2 style="margin-bottom: 20px; color: #28a745;">Approved Requests ({{ approved_requests.count }})</h2>
+      {% if approved_requests %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Full Name</th>
+            <th>Contact</th>
+            <th>Relief Type</th>
+            <th>Notes</th>
+            <th>Request Date</th>
+            <th>Approved By</th>
+            <th>Approved Date</th>
+            <th>Relief Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for request in approved_requests %}
+          <tr>
+            <td><strong>#{{ request.id }}</strong></td>
+            <td>{{ request.user.username }}</td>
+            <td>{{ request.user.firstname }} {{ request.user.lastname }}</td>
+            <td>{{ request.user.contact }}</td>
+            <td><strong>{{ request.relief_type }}</strong></td>
+            <td>{{ request.notes|truncatewords:10 }}</td>
+            <td>{{ request.request_date|date:"M d, Y H:i" }}</td>
+            <td>{{ request.reviewed_by.username|default:"N/A" }}</td>
+            <td>{{ request.reviewed_date|date:"M d, Y H:i"|default:"N/A" }}</td>
+            <td>
+              {% if request.relief_given %}
+                <span class="status-badge status-given"><i class="bx bx-check"></i> Given</span>
+              {% else %}
+                <span class="status-badge status-not-given"><i class="bx bx-x"></i> Not Given</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="action-buttons">
+                {% if not request.relief_given %}
+                  <form method="post" action="{% url 'mark_relief_given' request.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-mark-given" onclick="return confirm('Mark this relief as given?')">
+                      <i class="bx bx-check"></i> Mark Given
+                    </button>
+                  </form>
+                {% else %}
+                  <form method="post" action="{% url 'mark_relief_not_given' request.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-mark-not-given" onclick="return confirm('Mark this relief as not given?')">
+                      <i class="bx bx-x"></i> Mark Not Given
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p style="text-align: center; padding: 50px; color: #999;"><i class="bx bx-info-circle" style="font-size: 3rem; display: block; margin-bottom: 10px; color: #6c757d;"></i>No approved relief requests yet!</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

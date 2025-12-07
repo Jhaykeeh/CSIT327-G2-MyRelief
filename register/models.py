@@ -102,11 +102,46 @@ class ReliefDistribution(models.Model):
         ordering = ['-distribution_date']
 
 
+class ReliefRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    ]
+    
+    RELIEF_TYPE_CHOICES = [
+        ('Food', 'Food'),
+        ('Clothing', 'Clothing'),
+        ('Medicine', 'Medicine'),
+        ('Hygiene', 'Hygiene'),
+        ('Shelter', 'Shelter'),
+        ('Others', 'Others'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='relief_requests')
+    relief_type = models.CharField(max_length=20, choices=RELIEF_TYPE_CHOICES, default='Food')
+    notes = models.TextField(help_text='Additional notes or reason for requesting relief', default='')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    request_date = models.DateTimeField(auto_now_add=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_requests')
+    reviewed_date = models.DateTimeField(null=True, blank=True)
+    admin_notes = models.TextField(blank=True, null=True)
+    relief_given = models.BooleanField(default=False, help_text='Whether the relief has been physically given to the user')
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.relief_type} ({self.status})"
+    
+    class Meta:
+        verbose_name_plural = "Relief Requests"
+        ordering = ['-request_date']
+
+
 class Notification(models.Model):
     NOTIFICATION_TYPES = [
         ('new_user', 'New User Registration'),
         ('low_stock', 'Low Stock Alert'),
         ('distribution', 'Relief Distribution'),
+        ('relief_request', 'Relief Request'),
         ('update', 'System Update'),
     ]
     
@@ -124,16 +159,8 @@ class Notification(models.Model):
         ordering = ['-created_at']
 
 
-# Signal to create notification when new user registers
-@receiver(post_save, sender=User)
-def create_user_notification(sender, instance, created, **kwargs):
-    if created and instance.role == 'FamilyHead':
-        Notification.objects.create(
-            notification_type='new_user',
-            title='New User Registration',
-            message=f'New family head registered: {instance.firstname} {instance.lastname} ({instance.username})',
-            related_user=instance
-        )
+# DO NOT create notification when new user registers
+# Users are only added to pending when they request relief
 
 
 # Signal to create notification when inventory is low
@@ -163,5 +190,17 @@ def create_distribution_notification(sender, instance, created, **kwargs):
             notification_type='distribution',
             title='Relief Distribution',
             message=f'{instance.item.name} distributed to {instance.user.firstname} {instance.user.lastname} ({instance.quantity_distributed} items)',
+            related_user=instance.user
+        )
+
+
+# Signal to create notification when relief request is made
+@receiver(post_save, sender=ReliefRequest)
+def create_relief_request_notification(sender, instance, created, **kwargs):
+    if created:
+        Notification.objects.create(
+            notification_type='relief_request',
+            title='New Relief Request',
+            message=f'{instance.user.firstname} {instance.user.lastname} requested {instance.relief_type} relief',
             related_user=instance.user
         )

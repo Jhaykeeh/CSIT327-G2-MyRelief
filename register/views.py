@@ -1,10 +1,15 @@
 import os
+import re
+
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.db.models import Q, Count, Sum
+from django.views.decorators.http import require_http_methods
+
 from .forms import RegistrationForm, DashboardForm
-from .models import User, Inventory, ReliefDistribution
-import re
+from .models import User, Inventory, ReliefDistribution, ReliefRequest, Notification
 
 # ---------------- HELPERS ----------------
 def validate_name(name):
@@ -150,6 +155,11 @@ def dashboard_view(request, user_id):
     user_distributions = ReliefDistribution.objects.filter(user=user).select_related('item')
     total_reliefs_received = user_distributions.count()
     relief_types_count = user_distributions.values_list('item__category', flat=True).distinct().count()
+    
+    # Get user's relief requests
+    user_requests = ReliefRequest.objects.filter(user=user).order_by('-request_date')
+    pending_request = user_requests.filter(status='pending').first()
+    latest_request = user_requests.first()
 
     if request.method == "POST":
         form = DashboardForm(request.POST)
@@ -176,7 +186,10 @@ def dashboard_view(request, user_id):
         "user_id": user_id,
         "user_distributions": user_distributions,
         "total_reliefs_received": total_reliefs_received,
-        "relief_types_count": relief_types_count
+        "relief_types_count": relief_types_count,
+        "user_requests": user_requests,
+        "pending_request": pending_request,
+        "latest_request": latest_request,
     })
 
 
@@ -281,10 +294,6 @@ def admin_relief_history(request):
     return render(request, "admin_relief_history.html", {"distributions": distributions})
 
 # Custom Admin Dashboard View
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from .models import User, Inventory, ReliefDistribution, Notification
-from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
@@ -306,9 +315,8 @@ def custom_admin_dashboard(request):
     total_inventory = Inventory.objects.aggregate(total=Sum('quantity'))['total'] or 0
     total_distributions = ReliefDistribution.objects.count()
     
-    # Pending requests: users who have not received any distribution
-    distributed_users = ReliefDistribution.objects.values_list('user_id', flat=True).distinct()
-    pending_requests = User.objects.filter(role='FamilyHead').exclude(userid__in=distributed_users).count()
+    # Pending requests: count actual relief requests with pending status
+    pending_requests = ReliefRequest.objects.filter(status='pending').count()
     
     # Get recent users with search
     recent_users = User.objects.filter(role='FamilyHead')
@@ -370,7 +378,8 @@ def manage_users_view(request):
     if barangay_filter:
         users = users.filter(barangay__iexact=barangay_filter)
     
-    users = users.order_by('-userid')
+    # Optimize query with prefetch_related to avoid N+1 problem
+    users = users.prefetch_related('distributions__item', 'distributions__distributed_by').order_by('-userid')
     
     # Get distinct cities and barangays for dropdowns (case-insensitive)
     all_cities = User.objects.filter(role='FamilyHead').exclude(city__isnull=True).exclude(city__exact='').values_list('city', flat=True).distinct()
@@ -379,6 +388,13 @@ def manage_users_view(request):
     # Normalize cities and barangays to title case for display
     cities = sorted(set([city.strip().title() for city in all_cities if city and city.strip()]))
     barangays = sorted(set([barangay.strip().title() for barangay in all_barangays if barangay and barangay.strip()]))
+    
+    # Attach distribution data directly to each user object
+    for user in users:
+        distributions = user.distributions.all()  # Already prefetched, no extra query
+        user.has_distributions = len(distributions) > 0
+        user.distribution_count = len(distributions)
+        user.all_distributions = list(distributions)
     
     context = {
         'users': users,
@@ -605,12 +621,11 @@ def pending_requests_view(request):
         if not request.user.is_staff:
             return redirect('login')
     
-    # Get users who have not received any distribution
-    distributed_users = ReliefDistribution.objects.values_list('user_id', flat=True).distinct()
-    pending_users = User.objects.filter(role='FamilyHead').exclude(userid__in=distributed_users).order_by('-userid')
+    # Get pending relief requests
+    pending_requests = ReliefRequest.objects.filter(status='pending').select_related('user').order_by('-request_date')
     
     context = {
-        'pending_users': pending_users,
+        'pending_requests': pending_requests,
         'unread_notifications': Notification.objects.filter(is_read=False).count(),
     }
     
@@ -627,9 +642,8 @@ def analytics_view(request):
     # Get distribution statistics
     total_distributed = ReliefDistribution.objects.count()
     
-    # Get pending requests
-    distributed_users = ReliefDistribution.objects.values_list('user_id', flat=True).distinct()
-    total_pending = User.objects.filter(role='FamilyHead').exclude(userid__in=distributed_users).count()
+    # Get pending relief requests
+    total_pending = ReliefRequest.objects.filter(status='pending').count()
     
     # Get inventory count
     total_inventory = Inventory.objects.aggregate(total=Sum('quantity'))['total'] or 0
@@ -730,3 +744,150 @@ def get_notifications_ajax(request):
         'notifications': data,
         'count': Notification.objects.filter(is_read=False).count()
     })
+
+
+# ---------------- CREATE RELIEF REQUEST (USER) ----------------
+@login_required
+def create_relief_request(request, user_id):
+    try:
+        user = User.objects.get(userid=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('login')
+    
+    # Check if user already has a pending request
+    existing_pending = ReliefRequest.objects.filter(user=user, status='pending').exists()
+    if existing_pending:
+        messages.warning(request, "You already have a pending relief request.")
+        return redirect('dashboard', user_id=user_id)
+    
+    if request.method == "POST":
+        relief_type = request.POST.get('relief_type', '').strip()
+        notes = request.POST.get('notes', '').strip()
+        
+        if not relief_type:
+            messages.error(request, "Please select a relief type.")
+            return redirect('dashboard', user_id=user_id)
+        
+        if not notes:
+            messages.error(request, "Please provide notes for your relief request.")
+            return redirect('dashboard', user_id=user_id)
+        
+        ReliefRequest.objects.create(
+            user=user,
+            relief_type=relief_type,
+            notes=notes,
+            status='pending'
+        )
+        messages.success(request, "Your relief request has been submitted successfully!")
+        return redirect('dashboard', user_id=user_id)
+    
+    return redirect('dashboard', user_id=user_id)
+
+
+# ---------------- APPROVE RELIEF REQUEST (ADMIN) ----------------
+@login_required
+@require_http_methods(["POST"])
+def approve_request_view(request, request_id):
+    if not hasattr(request.user, 'role') or request.user.role != 'Admin':
+        if not request.user.is_staff:
+            return redirect('login')
+    
+    try:
+        relief_request = ReliefRequest.objects.get(id=request_id)
+        relief_request.status = 'approved'
+        relief_request.reviewed_by = request.user
+        relief_request.reviewed_date = timezone.now()
+        
+        # Check if relief was marked as given
+        relief_given = request.POST.get('relief_given') == 'on'
+        relief_request.relief_given = relief_given
+        
+        relief_request.save()
+        
+        messages.success(request, f"Request from {relief_request.user.username} has been approved.")
+    except ReliefRequest.DoesNotExist:
+        messages.error(request, "Relief request not found.")
+    
+    return redirect('pending_requests')
+
+
+# ---------------- DENY RELIEF REQUEST (ADMIN) ----------------
+@login_required
+@require_http_methods(["POST"])
+def deny_request_view(request, request_id):
+    if not hasattr(request.user, 'role') or request.user.role != 'Admin':
+        if not request.user.is_staff:
+            return redirect('login')
+    
+    try:
+        relief_request = ReliefRequest.objects.get(id=request_id)
+        admin_notes = request.POST.get('admin_notes', '').strip()
+        
+        relief_request.status = 'denied'
+        relief_request.reviewed_by = request.user
+        relief_request.reviewed_date = timezone.now()
+        relief_request.admin_notes = admin_notes
+        relief_request.save()
+        
+        messages.success(request, f"Request from {relief_request.user.username} has been denied.")
+    except ReliefRequest.DoesNotExist:
+        messages.error(request, "Relief request not found.")
+    
+    return redirect('pending_requests')
+
+
+# ---------------- APPROVED REQUESTS (ADMIN) ----------------
+@login_required
+def approved_requests_view(request):
+    if not hasattr(request.user, 'role') or request.user.role != 'Admin':
+        if not request.user.is_staff:
+            return redirect('login')
+    
+    approved_requests = ReliefRequest.objects.filter(status='approved').order_by('-reviewed_date')
+    
+    context = {
+        'approved_requests': approved_requests,
+    }
+    return render(request, 'admin_approved_requests.html', context)
+
+
+# ---------------- MARK RELIEF AS GIVEN (ADMIN) ----------------
+@login_required
+@require_http_methods(["POST"])
+def mark_relief_given_view(request, request_id):
+    if not hasattr(request.user, 'role') or request.user.role != 'Admin':
+        if not request.user.is_staff:
+            return redirect('login')
+    
+    try:
+        relief_request = ReliefRequest.objects.get(id=request_id)
+        relief_request.relief_given = True
+        relief_request.save()
+        
+        messages.success(request, f"Relief marked as given for {relief_request.user.username}.")
+    except ReliefRequest.DoesNotExist:
+        messages.error(request, "Relief request not found.")
+    
+    return redirect('approved_requests')
+
+
+# ---------------- MARK RELIEF AS NOT GIVEN (ADMIN) ----------------
+@login_required
+@require_http_methods(["POST"])
+def mark_relief_not_given_view(request, request_id):
+    if not hasattr(request.user, 'role') or request.user.role != 'Admin':
+        if not request.user.is_staff:
+            return redirect('login')
+    
+    try:
+        relief_request = ReliefRequest.objects.get(id=request_id)
+        relief_request.relief_given = False
+        relief_request.save()
+        
+        messages.success(request, f"Relief marked as not given for {relief_request.user.username}.")
+    except ReliefRequest.DoesNotExist:
+        messages.error(request, "Relief request not found.")
+    
+    return redirect('approved_requests')
+
