@@ -747,8 +747,13 @@ def get_notifications_ajax(request):
 
 
 # ---------------- CREATE RELIEF REQUEST (USER) ----------------
-@login_required
 def create_relief_request(request, user_id):
+    # Check if user is logged in via custom session
+    session_user = request.session.get("user")
+    if not session_user or str(session_user["userid"]) != str(user_id):
+        messages.error(request, "Please log in to continue.")
+        return redirect('login')
+    
     try:
         user = User.objects.get(userid=user_id)
     except User.DoesNotExist:
