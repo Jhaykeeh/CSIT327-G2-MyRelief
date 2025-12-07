@@ -351,6 +351,9 @@ def manage_users_view(request):
             return redirect('login')
     
     search_query = request.GET.get('search', '')
+    city_filter = request.GET.get('city', '')
+    barangay_filter = request.GET.get('barangay', '')
+    
     users = User.objects.filter(role='FamilyHead')
     
     if search_query:
@@ -361,11 +364,29 @@ def manage_users_view(request):
             Q(contact__icontains=search_query)
         )
     
+    if city_filter:
+        users = users.filter(city__iexact=city_filter)
+    
+    if barangay_filter:
+        users = users.filter(barangay__iexact=barangay_filter)
+    
     users = users.order_by('-userid')
+    
+    # Get distinct cities and barangays for dropdowns (case-insensitive)
+    all_cities = User.objects.filter(role='FamilyHead').exclude(city__isnull=True).exclude(city__exact='').values_list('city', flat=True).distinct()
+    all_barangays = User.objects.filter(role='FamilyHead').exclude(barangay__isnull=True).exclude(barangay__exact='').values_list('barangay', flat=True).distinct()
+    
+    # Normalize cities and barangays to title case for display
+    cities = sorted(set([city.strip().title() for city in all_cities if city and city.strip()]))
+    barangays = sorted(set([barangay.strip().title() for barangay in all_barangays if barangay and barangay.strip()]))
     
     context = {
         'users': users,
         'search_query': search_query,
+        'city_filter': city_filter,
+        'barangay_filter': barangay_filter,
+        'cities': cities,
+        'barangays': barangays,
         'unread_notifications': Notification.objects.filter(is_read=False).count(),
     }
     
