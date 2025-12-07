@@ -1,7 +1,7 @@
       * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f2f7f2, #e0f2e0);
+            background: white;
             min-height: 100vh;
             display: flex;
             justify-content: center;
