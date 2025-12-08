@@ -8,29 +8,177 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
-    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
-    .add-item-card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .add-item-card h2 { margin-bottom: 20px; color: #2d4a3e; }
-    .form-inline { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: end; }
-    .form-group { display: flex; flex-direction: column; }
-    .form-group label { margin-bottom: 8px; font-weight: 600; color: #333; font-size: 0.9rem; }
-    .form-group input, .form-group select { padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; }
-    .btn-add { padding: 12px 25px; background: #28a745; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .inventory-item { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #3A5A40; }
-    .item-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
-    .item-name { font-size: 1.1rem; font-weight: 700; color: #2d4a3e; }
-    .item-category { padding: 4px 12px; background: #8A9A5B; color: white; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
-    .item-quantity { font-size: 2rem; font-weight: 800; color: #3A5A40; margin: 10px 0; }
-    .item-actions { display: flex; gap: 10px; margin-top: 15px; }
-    .btn-sm { padding: 6px 12px; border: none; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: white; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
-    .btn-edit { background: #17a2b8; }
-    .btn-delete { background: #dc3545; }
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ===== BASE STYLES ===== */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f5f7fa;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d4a3e;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-back {
+      padding: 10px 20px;
+      background: #3A5A40;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-add {
+      padding: 12px 25px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-edit {
+      background: #17a2b8;
+    }
+
+    .btn-delete {
+      background: #dc3545;
+    }
+
+    /* ===== ADD ITEM CARD ===== */
+    .add-item-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .add-item-card h2 {
+      margin-bottom: 20px;
+      color: #2d4a3e;
+    }
+
+    /* ===== FORMS ===== */
+    .form-inline {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 15px;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* ===== INVENTORY GRID ===== */
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .inventory-item {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid #3A5A40;
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+
+    .item-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2d4a3e;
+    }
+
+    .item-category {
+      padding: 4px 12px;
+      background: #8A9A5B;
+      color: white;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .item-quantity {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #3A5A40;
+      margin: 10px 0;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>

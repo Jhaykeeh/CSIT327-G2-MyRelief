@@ -7,21 +7,111 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
-    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
-    .notifications-container { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .notification-item { padding: 15px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 15px; align-items: start; transition: all 0.2s ease; }
-    .notification-item:hover { background: #f8f9fa; }
-    .notification-item.unread { background: #e3f2fd; }
-    .notification-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
-    .notification-content { flex: 1; }
-    .notification-content h3 { font-size: 0.95rem; font-weight: 600; color: #333; margin-bottom: 5px; }
-    .notification-content p { font-size: 0.85rem; color: #666; }
-    .notification-time { font-size: 0.75rem; color: #999; margin-top: 5px; }
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ===== BASE STYLES ===== */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f5f7fa;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d4a3e;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-back {
+      padding: 10px 20px;
+      background: #3A5A40;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== NOTIFICATIONS ===== */
+    .notifications-container {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .notification-item {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      gap: 15px;
+      align-items: start;
+      transition: all 0.2s ease;
+    }
+
+    .notification-item:hover {
+      background: #f8f9fa;
+    }
+
+    .notification-item.unread {
+      background: #e3f2fd;
+    }
+
+    .notification-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-content h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .notification-content p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: #999;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>

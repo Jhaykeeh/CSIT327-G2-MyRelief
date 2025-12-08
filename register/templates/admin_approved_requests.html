@@ -7,26 +7,153 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Montserrat', sans-serif; background: #f5f7fa; }
-    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-    .header h1 { font-family: 'Raleway', sans-serif; font-size: 2rem; font-weight: 700; color: #2d4a3e; }
-    .btn-back { padding: 10px 20px; background: #3A5A40; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
-    .table-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #f8f9fa; }
-    th { padding: 15px; text-align: left; font-weight: 600; color: #555; font-size: 0.85rem; text-transform: uppercase; }
-    td { padding: 15px; border-bottom: 1px solid #f0f0f0; }
-    tbody tr:hover { background: #f8f9fa; }
-    .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
-    .status-given { background: #d4edda; color: #155724; }
-    .status-not-given { background: #f8d7da; color: #721c24; }
-    .btn-mark-given { padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer; font-size: 0.85rem; }
-    .btn-mark-given:hover { background: #218838; }
-    .btn-mark-not-given { padding: 8px 16px; background: #ffc107; color: #333; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer; font-size: 0.85rem; margin-left: 5px; }
-    .btn-mark-not-given:hover { background: #e0a800; }
-    .action-buttons { display: flex; gap: 8px; align-items: center; }
+    /* ===== RESET ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ===== BASE STYLES ===== */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f5f7fa;
+    }
+
+    /* ===== LAYOUT ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d4a3e;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-back {
+      padding: 10px 20px;
+      background: #3A5A40;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-mark-given {
+      padding: 8px 16px;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-mark-given:hover {
+      background: #218838;
+    }
+
+    .btn-mark-not-given {
+      padding: 8px 16px;
+      background: #ffc107;
+      color: #333;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-left: 5px;
+    }
+
+    .btn-mark-not-given:hover {
+      background: #e0a800;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ===== TABLE CARD ===== */
+    .table-card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    /* ===== TABLE STYLES ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8f9fa;
+    }
+
+    th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-given {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-not-given {
+      background: #f8d7da;
+      color: #721c24;
+    }
   </style>
 </head>
 <body>
