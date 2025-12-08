@@ -1,4 +1,3 @@
-import os
 import re
 
 from django.shortcuts import render, redirect
@@ -17,11 +16,6 @@ def validate_name(name):
     if not re.match(r'^[a-zA-Z\s]*$', name):
         return False  # Invalid name if it contains numbers or special characters
     return True
-
-
-def sanitize_name(name):
-    # Remove any invalid characters from the name (e.g., numbers, special characters)
-    return re.sub(r'[^a-zA-Z\s]', '', name)
 
 
 # ---------------- CONTACT NUMBER VALIDATION ----------------
@@ -282,22 +276,10 @@ def view_only_dashboard(request, user_id):
     })
 
 
-# ---------------- ADMIN STATIC PAGES ----------------
-def admin_inventory(request):
-    return render(request, "admin_inventory.html")
-
-def admin_dashboard(request):
-    return render(request, "admin_dashboard.html")
-
-def admin_relief_history(request):
-    distributions = ReliefDistribution.objects.select_related('user', 'item').all()
-    return render(request, "admin_relief_history.html", {"distributions": distributions})
-
 # Custom Admin Dashboard View
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
-import json
 
 @login_required
 def custom_admin_dashboard(request):
@@ -671,8 +653,7 @@ def reports_view(request):
         if not request.user.is_staff:
             return redirect('login')
     
-    # Get new users in the last 30 days
-    thirty_days_ago = timezone.now() - timedelta(days=30)
+    # Get new users
     new_users = User.objects.filter(
         role='FamilyHead',
         userid__gte=User.objects.filter(role='FamilyHead').order_by('-userid').first().userid - 100
